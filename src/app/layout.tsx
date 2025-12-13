@@ -15,7 +15,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AltTextGen - AI Powered Accessibility",
+  title: "AltSEO - AI Powered Accessibility",
   description: "Automate your image accessibility with enterprise-grade AI vision.",
 };
 
