@@ -8,6 +8,8 @@ interface SaveImageMetadataInput {
   fileName: string
   fileSize: number
   mimeType: string
+  width?: number
+  height?: number
 }
 
 export async function saveImageMetadata(input: SaveImageMetadataInput) {
@@ -27,6 +29,8 @@ export async function saveImageMetadata(input: SaveImageMetadataInput) {
         file_name: input.fileName,
         file_size: input.fileSize,
         mime_type: input.mimeType,
+        width: input.width,
+        height: input.height,
       })
       .select()
       .single()
