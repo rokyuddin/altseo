@@ -16,7 +16,7 @@ export function UploadZone({
   onFilesSelected,
   maxSize = 20,
   accept = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'],
-  multiple = false,
+  multiple = true,
   className,
 }: UploadZoneProps) {
   const [isDragging, setIsDragging] = useState(false)
