@@ -56,13 +56,7 @@ export default async function HistoryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-green-50/30 to-blue-50/20 relative overflow-hidden">
-      {/* Organic background blobs */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] bg-green-200/20 rounded-full blur-[100px] animate-pulse"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-200/20 rounded-full blur-[120px]"></div>
-      </div>
-
+    <div className="px-6 py-12 space-y-8 relative z-10">
       <div className="max-w-6xl mx-auto px-6 py-12 space-y-8 relative z-10">
         {/* Header */}
         <div className="flex items-start justify-between">
@@ -84,7 +78,7 @@ export default async function HistoryPage() {
           </div>
           {!isPro && results && results.length > 0 && (
             <Link
-              href="/pricing"
+              href="/?scroll=pricing"
               className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-green-600 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
             >
               <TrendingUp className="h-4 w-4" />
@@ -196,7 +190,7 @@ export default async function HistoryPage() {
                               <Calendar className="h-3.5 w-3.5" />
                               {format(
                                 new Date(result.created_at),
-                                "MMM d, yyyy 'at' h:mm a",
+                                "MMM d, yyyy 'at' h:mm a"
                               )}
                             </span>
                             {result.file_size && (
@@ -215,8 +209,13 @@ export default async function HistoryPage() {
                         {/* Download Button */}
                         {result.alt_text && (
                           <a
-                            href={`data:text/plain;charset=utf-8,${encodeURIComponent(result.alt_text)}`}
-                            download={`${result.file_name.replace(/\.[^/.]+$/, "")}-alt-text.txt`}
+                            href={`data:text/plain;charset=utf-8,${encodeURIComponent(
+                              result.alt_text
+                            )}`}
+                            download={`${result.file_name.replace(
+                              /\.[^/.]+$/,
+                              ""
+                            )}-alt-text.txt`}
                             className="flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-semibold text-background transition-all hover:bg-foreground/90 shadow-md hover:shadow-lg hover:-translate-y-0.5"
                           >
                             <Download className="h-4 w-4" />

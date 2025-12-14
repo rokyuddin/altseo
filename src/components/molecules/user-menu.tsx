@@ -8,6 +8,8 @@ import {
   History,
   Settings,
   LogOut,
+  Upload,
+  Key,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -68,7 +70,16 @@ export function UserMenu({ userEmail, className }: UserMenuProps) {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link
-            href="/dashboard/history"
+            href="/upload"
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <Upload className="h-4 w-4" />
+            Upload
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
+            href="/history"
             className="flex items-center gap-2 cursor-pointer"
           >
             <History className="h-4 w-4" />
@@ -77,11 +88,20 @@ export function UserMenu({ userEmail, className }: UserMenuProps) {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link
-            href="/dashboard/settings"
+            href="/settings"
             className="flex items-center gap-2 cursor-pointer"
           >
             <Settings className="h-4 w-4" />
             Settings
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
+            href="/api-keys"
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <Key className="h-4 w-4" />
+            API Keys
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

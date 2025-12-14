@@ -16,7 +16,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "AltSEO - AI Powered Accessibility",
-  description: "Automate your image accessibility with enterprise-grade AI vision.",
+  description:
+    "Automate your image accessibility with enterprise-grade AI vision.",
 };
 
 export default function RootLayout({
@@ -25,8 +26,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${inter.variable} ${playfair.variable} font-sans antialiased bg-[#fcfbf9] text-zinc-900`}
       >
         {children}

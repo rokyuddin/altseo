@@ -76,6 +76,15 @@ export default async function DashboardPage() {
           <p className="text-3xl font-bold text-foreground">
             {isPro ? "Pro" : "Free"}
           </p>
+          {!isPro && (
+            <Link
+              href="/?scroll=pricing"
+              className="inline-flex items-center gap-2 mt-4 rounded-full bg-gradient-to-r from-primary to-accent px-4 py-2 text-xs font-semibold text-white transition-all hover:from-primary/90 hover:to-accent/90 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+            >
+              <Crown className="h-3 w-3" />
+              Upgrade to Pro
+            </Link>
+          )}
         </div>
 
         {/* Daily Usage Card */}

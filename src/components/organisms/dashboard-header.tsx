@@ -14,12 +14,12 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
   return (
     <header className="fixed top-0 left-0 w-full z-50 p-6 md:p-8">
       <div className="max-w-5xl mx-auto bg-white/50 backdrop-blur-xl border border-white/40 rounded-full px-6 py-4 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-2">
+        <Link href={"/"} className="flex items-center gap-2">
           <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
             <Leaf className="w-4 h-4 fill-current" />
           </div>
           <span className="font-bold tracking-tight text-lg">AltSEO</span>
-        </div>
+        </Link>
         <nav className="hidden md:flex gap-8 text-sm font-medium text-muted-foreground">
           <Link
             href="/dashboard"

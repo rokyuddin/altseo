@@ -40,13 +40,7 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-green-50/30 to-blue-50/20 relative overflow-hidden">
-      {/* Organic background blobs */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] bg-green-200/20 rounded-full blur-[100px] animate-pulse"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-200/20 rounded-full blur-[120px]"></div>
-      </div>
-
+    <div className="px-6 py-12 space-y-8 relative z-10">
       <div className="max-w-5xl mx-auto px-6 py-12 space-y-8 relative z-10">
         {/* Header */}
         <div className="space-y-3">
@@ -170,7 +164,9 @@ export default async function SettingsPage() {
                       <div
                         className="h-full rounded-full bg-gradient-to-r from-green-400 to-blue-400 transition-all duration-500"
                         style={{
-                          width: `${(rateLimit.remaining / rateLimit.limit) * 100}%`,
+                          width: `${
+                            (rateLimit.remaining / rateLimit.limit) * 100
+                          }%`,
                         }}
                       />
                     </div>
@@ -195,7 +191,9 @@ export default async function SettingsPage() {
                     <p className="text-sm text-muted-foreground">
                       {apiKeysCount === 0
                         ? "No API keys created yet"
-                        : `${apiKeysCount} active ${apiKeysCount === 1 ? "key" : "keys"}`}
+                        : `${apiKeysCount} active ${
+                            apiKeysCount === 1 ? "key" : "keys"
+                          }`}
                     </p>
                   </div>
                 </div>

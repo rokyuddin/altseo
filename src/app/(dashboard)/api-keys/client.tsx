@@ -62,7 +62,7 @@ export default function ApiKeysClient({
   const handleRevoke = async (id: string) => {
     if (
       !confirm(
-        "Are you sure you want to revoke this API key? This action cannot be undone.",
+        "Are you sure you want to revoke this API key? This action cannot be undone."
       )
     ) {
       return;
@@ -94,13 +94,7 @@ export default function ApiKeysClient({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-green-50/30 to-blue-50/20 relative overflow-hidden">
-      {/* Organic background blobs */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] bg-green-200/20 rounded-full blur-[100px] animate-pulse"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-200/20 rounded-full blur-[120px]"></div>
-      </div>
-
+    <div className="px-6 py-12 space-y-8 relative z-10">
       <div className="max-w-5xl mx-auto px-6 py-12 space-y-8 relative z-10">
         {/* Header */}
         <div className="flex items-start justify-between">
@@ -328,7 +322,7 @@ export default function ApiKeysClient({
                               Last used{" "}
                               {format(
                                 new Date(key.last_used_at),
-                                "MMM d, yyyy",
+                                "MMM d, yyyy"
                               )}
                             </span>
                           ) : (

@@ -3,6 +3,7 @@ import { getUser } from "@/lib/auth/get-user";
 import { signOut } from "@/lib/auth/actions";
 import Link from "next/link";
 import { DashboardHeader } from "@/components/organisms/dashboard-header";
+import Footer from "@/components/organisms/footer";
 
 export default async function DashboardLayout({
   children,
@@ -25,6 +26,7 @@ export default async function DashboardLayout({
         </div>
         {children}
       </main>
+      <Footer />
     </div>
   );
 }

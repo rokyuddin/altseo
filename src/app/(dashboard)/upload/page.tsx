@@ -58,7 +58,7 @@ export default async function UploadPage() {
             </div>
           ) : (
             <Link
-              href="/pricing"
+              href="/?scroll=pricing"
               className="flex items-center gap-2 rounded-full bg-gradient-to-r from-green-600 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5"
             >
               <TrendingUp className="h-4 w-4" />

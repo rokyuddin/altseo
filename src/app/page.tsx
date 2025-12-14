@@ -3,12 +3,22 @@ import { Button } from "@/components/atoms/button";
 import { ArrowRight, Leaf, Sparkles, Sun, Wind } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { HomeHeader } from "@/components/organisms/home-header";
+import { PricingSection } from "@/components/organisms/pricing-section";
+import Footer from "@/components/organisms/footer";
+import { getUserPlan } from "@/lib/subscription";
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ success?: string }>;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const userPlan = user ? await getUserPlan(user.id) : 'free';
+  const showSuccess = (await searchParams)?.success === 'upgrade';
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans transition-colors duration-500 overflow-x-hidden">
@@ -237,6 +247,9 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* Pricing Section */}
+        <PricingSection user={user} userPlan={userPlan} showSuccess={showSuccess} />
+
         {/* CTA - Full Width */}
         <section className="py-32 px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-8">
@@ -270,28 +283,7 @@ export default async function Home() {
         </section>
 
         {/* Footer - Simple & Clean */}
-        <footer className="py-12 px-6 border-t border-stone-100 bg-white/50">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex items-center gap-2">
-              <Leaf className="w-5 h-5 text-primary" />
-              <span className="font-bold text-foreground">AltSEO</span>
-            </div>
-            <div className="flex gap-8 text-sm font-medium text-muted-foreground">
-              <Link href="#" className="hover:text-primary transition-colors">
-                Privacy
-              </Link>
-              <Link href="#" className="hover:text-primary transition-colors">
-                Terms
-              </Link>
-              <Link href="#" className="hover:text-primary transition-colors">
-                Twitter
-              </Link>
-            </div>
-            <div className="text-sm text-muted-foreground/60">
-              © 2024 AltSEO Inc.
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </main>
     </div>
   );
