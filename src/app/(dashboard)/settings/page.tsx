@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Crown, Key, TrendingUp, User, Shield, Zap, Leaf } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function SettingsPage() {
   const user = await getUser();
   if (!user) {

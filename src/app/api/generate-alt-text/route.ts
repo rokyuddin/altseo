@@ -23,7 +23,7 @@ function sanitizeText(text: string): string {
 }
 
 // Get user from Bearer token or session
-async function getUserFromRequest(request: NextRequest, supabase: ReturnType<typeof createClient>) {
+async function getUserFromRequest(request: NextRequest, supabase: Awaited<ReturnType<typeof createClient>>) {
   // Check for Bearer token
   const authHeader = request.headers.get('authorization')
   if (authHeader?.startsWith('Bearer ')) {
@@ -248,13 +248,15 @@ export async function POST(request: NextRequest) {
     // Cache the result (expires in 30 days)
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + 30)
-    
-    await supabase.from('generation_cache').insert({
+
+    await supabase.from('generation_cache').upsert({
       storage_path: imagePath,
       alt_text: sanitizedText,
       variant,
       expires_at: expiresAt.toISOString(),
-    }).onConflict('storage_path,variant').merge()
+    }, {
+      onConflict: 'storage_path,variant'
+    })
 
     // Update the database if imageId was provided
     if (imageId) {

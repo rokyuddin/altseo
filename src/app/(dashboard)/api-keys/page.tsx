@@ -3,6 +3,8 @@ import { getUser, getUserProfile } from "@/lib/auth/get-user";
 import { createClient } from "@/lib/supabase/server";
 import ApiKeysClient from "./client";
 
+export const dynamic = 'force-dynamic';
+
 export default async function ApiKeysPage() {
   const user = await getUser();
   if (!user) {
