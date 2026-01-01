@@ -14,29 +14,6 @@ async function HeaderActions() {
 
   return (
     <div className="flex items-center gap-4">
-      <Suspense fallback={<UserActionsSkeleton />}>
-        {user ? (
-          <UserMenu userEmail={user.email} />
-        ) : (
-          <div className="flex gap-4 items-center">
-            <Link
-              href="/login"
-              className="text-sm font-semibold hover:text-primary hidden sm:block transition-colors"
-            >
-              Log in
-            </Link>
-            <Link href="/register">
-              <Button
-                size="sm"
-                className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-6 font-semibold shadow-lg shadow-primary/20"
-              >
-                Start Free
-              </Button>
-            </Link>
-          </div>
-        )}
-      </Suspense>
-
       <HomeMobileMenu
         links={HOME_LINKS}
         dashboardLinks={NAV_LINKS}

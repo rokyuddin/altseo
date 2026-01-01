@@ -11,6 +11,7 @@ import {
     SheetTrigger,
 } from "@/components/atoms/sheet";
 import { Logo } from "./logo";
+import { Separator } from "../atoms/separator";
 
 interface HomeMobileMenuProps {
     links: { href: string; label: string }[];
@@ -46,14 +47,16 @@ export function HomeMobileMenu({
                 </SheetHeader>
                 <div className="flex flex-col gap-8">
                     <nav className="flex flex-col gap-2">
-                        <h3 className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                        <h3 className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                             Menu
                         </h3>
+                        <Separator className="ml-4" />
+
                         {links.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className="text-lg font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all px-4 py-3 rounded-2xl"
+                                className="font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all px-4 py-2 rounded-2xl"
                             >
                                 {link.label}
                             </Link>
@@ -62,14 +65,15 @@ export function HomeMobileMenu({
 
                     {isLoggedIn && (
                         <nav className="flex flex-col gap-2">
-                            <h3 className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                            <h3 className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                                 Dashboard
                             </h3>
+                            <Separator className="ml-4" />
                             {dashboardLinks.map((link) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className="text-lg font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all px-4 py-3 rounded-2xl"
+                                    className="font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all px-4 py-2 rounded-2xl"
                                 >
                                     {link.label}
                                 </Link>
@@ -81,7 +85,7 @@ export function HomeMobileMenu({
                         <div className="pt-4 border-t border-border/40">
                             <Link
                                 href="/login"
-                                className="text-lg font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all px-4 py-3 rounded-2xl block"
+                                className="font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all px-4 py-3 roun2ed-2xl block"
                             >
                                 Log in
                             </Link>
