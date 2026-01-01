@@ -1,4 +1,4 @@
-import { Logo } from '@/components/atoms/logo'
+import { Logo } from '@/components/organisms/logo'
 import { Leaf, CheckCircle2, Sparkles } from 'lucide-react'
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {

@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -12,12 +13,10 @@ import {
   Key,
 } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/atoms/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/atoms/popover";
 import { Button } from "@/components/atoms/button";
 import { signOut } from "@/features/auth/actions/auth-actions";
 import { cn } from "@/lib/utils";
@@ -29,15 +28,21 @@ interface UserMenuProps {
 
 export function UserMenu({ userEmail, className }: UserMenuProps) {
   const router = useRouter();
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const handleSignOut = async () => {
     await signOut();
+    setIsOpen(false);
     router.refresh();
   };
 
+  const handleLinkClick = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
         <Button
           variant="ghost"
           size="icon"
@@ -49,70 +54,69 @@ export function UserMenu({ userEmail, className }: UserMenuProps) {
           <UserIcon className="h-5 w-5" />
           <span className="sr-only">User menu</span>
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        {userEmail && (
-          <>
-            <div className="px-2 py-1.5 text-sm text-muted-foreground">
-              {userEmail}
-            </div>
-            <DropdownMenuSeparator />
-          </>
-        )}
-        <DropdownMenuItem asChild>
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <LayoutDashboard className="h-4 w-4" />
-            Dashboard
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link
-            href="/upload"
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <Upload className="h-4 w-4" />
-            Upload
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link
-            href="/history"
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <History className="h-4 w-4" />
-            History
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link
-            href="/settings"
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <Settings className="h-4 w-4" />
-            Settings
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link
-            href="/api-keys"
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <Key className="h-4 w-4" />
-            API Keys
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={handleSignOut}
-          className="cursor-pointer text-destructive focus:text-destructive"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Sign Out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-56 p-0">
+        <div className="p-4">
+          {userEmail && (
+            <>
+              <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                {userEmail}
+              </div>
+              <hr className="my-2 border-border" />
+            </>
+          )}
+          <nav className="space-y-1">
+            <Link
+              href="/dashboard"
+              onClick={handleLinkClick}
+              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </Link>
+            <Link
+              href="/upload"
+              onClick={handleLinkClick}
+              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              <Upload className="h-4 w-4" />
+              Upload
+            </Link>
+            <Link
+              href="/history"
+              onClick={handleLinkClick}
+              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              <History className="h-4 w-4" />
+              History
+            </Link>
+            <Link
+              href="/settings"
+              onClick={handleLinkClick}
+              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              <Settings className="h-4 w-4" />
+              Settings
+            </Link>
+            <Link
+              href="/api-keys"
+              onClick={handleLinkClick}
+              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              <Key className="h-4 w-4" />
+              API Keys
+            </Link>
+            <hr className="my-2 border-border" />
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-destructive/10 text-destructive hover:text-destructive transition-colors w-full text-left"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </button>
+          </nav>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google"; // Editorial combination
-import "./globals.css";
+import "@/styles/globals.css";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${inter.variable} ${playfair.variable} font-sans antialiased bg-[#fcfbf9] text-zinc-900`}
+        className={`${inter.variable} ${playfair.variable} font-sans antialiased`}
       >
         {children}
       </body>

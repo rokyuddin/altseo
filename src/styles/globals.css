@@ -42,30 +42,62 @@
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
     --radius-xl: calc(var(--radius) + 4px);
+
+    /* Container Query Breakpoints */
+    --container-xs: 20rem;
+    /* 320px */
+    --container-sm: 24rem;
+    /* 384px */
+    --container-md: 28rem;
+    /* 448px */
+    --container-lg: 32rem;
+    /* 512px */
+    --container-xl: 36rem;
+    /* 576px */
+    --container-2xl: 42rem;
+    /* 672px */
+    --container-3xl: 48rem;
+    /* 768px */
+    --container-4xl: 56rem;
+    /* 896px */
+    --container-5xl: 64rem;
+    /* 1024px */
+    --container-6xl: 72rem;
+    /* 1152px */
+    --container-7xl: 80rem;
+    /* 1280px */
 }
 
 :root {
-    --radius: 1.5rem; /* Very round, organic feel */
+    --radius: 1.5rem;
+    /* Very round, organic feel */
     /* Organic Natural Theme */
-    --background: oklch(0.97 0.01 130); /* Soft sage cream */
-    --foreground: oklch(0.25 0.04 130); /* Deep forest green */
+    --background: oklch(0.97 0.01 130);
+    /* Soft sage cream */
+    --foreground: oklch(0.25 0.04 130);
+    /* Deep forest green */
 
-    --card: oklch(1 0 0); /* Pure white cards */
+    --card: oklch(1 0 0);
+    /* Pure white cards */
     --card-foreground: oklch(0.25 0.04 130);
 
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.25 0.04 130);
 
-    --primary: oklch(0.55 0.12 130); /* Fresh Leaf Green */
+    --primary: oklch(0.55 0.12 130);
+    /* Fresh Leaf Green */
     --primary-foreground: oklch(0.98 0.01 130);
 
-    --secondary: oklch(0.92 0.03 110); /* Soft warm beige/sand */
+    --secondary: oklch(0.92 0.03 110);
+    /* Soft warm beige/sand */
     --secondary-foreground: oklch(0.3 0.05 130);
 
-    --muted: oklch(0.94 0.02 130); /* Sage mist */
+    --muted: oklch(0.94 0.02 130);
+    /* Sage mist */
     --muted-foreground: oklch(0.5 0.05 130);
 
-    --accent: oklch(0.9 0.05 150); /* Soft Mint/Aqua */
+    --accent: oklch(0.9 0.05 150);
+    /* Soft Mint/Aqua */
     --accent-foreground: oklch(0.25 0.04 130);
 
     --destructive: oklch(0.6 0.15 25);
@@ -93,8 +125,10 @@
 
 .dark {
     /* Dark Organic Mode - Deep Woods */
-    --background: oklch(0.15 0.02 130); /* Deep Jungle */
-    --foreground: oklch(0.95 0.02 130); /* Pale Sage */
+    --background: oklch(0.15 0.02 130);
+    /* Deep Jungle */
+    --foreground: oklch(0.95 0.02 130);
+    /* Pale Sage */
 
     --card: oklch(0.18 0.03 130);
     --card-foreground: oklch(0.95 0.02 130);
@@ -102,7 +136,8 @@
     --popover: oklch(0.18 0.03 130);
     --popover-foreground: oklch(0.95 0.02 130);
 
-    --primary: oklch(0.65 0.15 130); /* Brighter Green for contrast */
+    --primary: oklch(0.65 0.15 130);
+    /* Brighter Green for contrast */
     --primary-foreground: oklch(0.1 0.02 130);
 
     --secondary: oklch(0.25 0.04 130);
@@ -141,19 +176,58 @@
     * {
         @apply border-border outline-ring/50;
     }
+
     body {
         @apply bg-background text-foreground;
     }
 }
 
 @layer utilities {
+
+    /* Container Query Types */
+    .container-normal {
+        container-type: normal;
+    }
+
+    .container-size {
+        container-type: size;
+    }
+
+    .container-inline-size {
+        container-type: inline-size;
+    }
+
+    /* Named Containers */
+    .container-card {
+        container-name: card;
+        container-type: inline-size;
+    }
+
+    .container-sidebar {
+        container-name: sidebar;
+        container-type: inline-size;
+    }
+
+    .container-main {
+        container-name: main;
+        container-type: inline-size;
+    }
+
+    .container-section {
+        container-name: section;
+        container-type: inline-size;
+    }
+
+
     /* Organic pulse animation for natural breathing effect */
     @keyframes pulse-slow {
+
         0%,
         100% {
             opacity: 0.3;
             transform: scale(1);
         }
+
         50% {
             opacity: 0.5;
             transform: scale(1.05);
@@ -169,6 +243,7 @@
         from {
             opacity: 0;
         }
+
         to {
             opacity: 1;
         }
@@ -179,6 +254,7 @@
             transform: translateY(1rem);
             opacity: 0;
         }
+
         to {
             transform: translateY(0);
             opacity: 1;
@@ -202,6 +278,7 @@
         from {
             transform: rotate(0deg);
         }
+
         to {
             transform: rotate(360deg);
         }
@@ -216,3 +293,16 @@
         animation-duration: 700ms;
     }
 }
+
+/* Container Query Variants */
+@custom-variant xs (@container (min-width: 20rem));
+@custom-variant sm (@container (min-width: 24rem));
+@custom-variant md (@container (min-width: 28rem));
+@custom-variant lg (@container (min-width: 32rem));
+@custom-variant xl (@container (min-width: 36rem));
+@custom-variant 2xl (@container (min-width: 42rem));
+@custom-variant 3xl (@container (min-width: 48rem));
+@custom-variant 4xl (@container (min-width: 56rem));
+@custom-variant 5xl (@container (min-width: 64rem));
+@custom-variant 6xl (@container (min-width: 72rem));
+@custom-variant 7xl (@container (min-width: 80rem));

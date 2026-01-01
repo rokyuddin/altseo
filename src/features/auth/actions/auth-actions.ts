@@ -27,29 +27,31 @@ export async function login(data: LoginInput) {
 }
 
 export async function signup(data: RegisterInput) {
-   const result = registerSchema.safeParse(data)
-   if (!result.success) {
-       return { error: 'Invalid input' }
-   }
-   
-   const supabase = await createClient()
-   
-   const { error } = await supabase.auth.signUp({
-       email: result.data.email,
-       password: result.data.password,
-   })
-   
-   if (error) {
-       return { error: error.message }
-   }
-   
-   revalidatePath('/', 'layout')
-   redirect('/dashboard')
+  const result = registerSchema.safeParse(data)
+  if (!result.success) {
+    return { error: 'Invalid input' }
+  }
+
+  const supabase = await createClient()
+
+  const { error } = await supabase.auth.signUp({
+    email: result.data.email,
+    password: result.data.password,
+  })
+
+  console.log(error)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/', 'layout')
+  redirect('/dashboard')
 }
 
 export async function signOut() {
-    const supabase = await createClient()
-    await supabase.auth.signOut()
-    revalidatePath('/', 'layout')
-    redirect('/login')
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+  revalidatePath('/', 'layout')
+  redirect('/login')
 }
