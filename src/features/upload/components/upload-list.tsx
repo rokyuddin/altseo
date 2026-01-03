@@ -9,7 +9,6 @@ import type { UploadedImage, SavedImage } from "../types";
 
 interface UploadListProps {
     images: UploadedImage[];
-    savedImages: SavedImage[];
     isUploading: boolean;
     onUploadAll: () => void;
     onUploadOne: (index: number) => void;
@@ -19,13 +18,13 @@ interface UploadListProps {
 
 export function UploadList({
     images,
-    savedImages,
     isUploading,
     onUploadAll,
     onUploadOne,
     onRemove,
     getImageUrl,
 }: UploadListProps) {
+
     const { uploadMode, setUploadMode } = useUploadStore();
 
     const pendingImages = images.filter((img) => !img.uploaded);
@@ -122,7 +121,7 @@ export function UploadList({
                                 )}
 
                                 {image.uploading && (
-                                    <div className="absolute inset-0 bg-white/80 backdrop-blur-md flex flex-col items-center justify-center rounded-[2rem] p-8 z-30 animate-in fade-in duration-300">
+                                    <div className="absolute inset-0 bg-white/80 backdrop-blur-md flex flex-col items-center justify-center rounded-4xl p-8 z-30 animate-in fade-in duration-300">
                                         <div className="relative mb-6">
                                             <div className="h-16 w-16 rounded-full border-4 border-primary/20 animate-[spin_3s_linear_infinite]" />
                                             <div className="absolute inset-0 flex items-center justify-center">
@@ -143,7 +142,7 @@ export function UploadList({
                                 )}
 
                                 {image.error && (
-                                    <div className="absolute inset-0 bg-red-50/90 backdrop-blur-md flex flex-col items-center justify-center rounded-[2rem] p-8 z-30 border border-red-200">
+                                    <div className="absolute inset-0 bg-red-50/90 backdrop-blur-md flex flex-col items-center justify-center rounded-4xl p-8 z-30 border border-red-200">
                                         <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
                                             <Box className="h-6 w-6 text-red-600" />
                                         </div>
@@ -165,40 +164,7 @@ export function UploadList({
                     </div>
                 </div>
             )}
-
-            {/* Saved Images */}
-            {savedImages.length > 0 && (
-                <div className="space-y-8">
-                    <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-2xl bg-zinc-100 flex items-center justify-center">
-                            <Layers className="h-6 w-6 text-zinc-500" />
-                        </div>
-                        <div>
-                            <h3 className="text-2xl font-bold text-foreground tracking-tight">Your Gallery</h3>
-                            <p className="text-sm text-muted-foreground font-medium">
-                                Previously generated alt text results
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {savedImages.map((image) => (
-                            <ImageCard
-                                key={image.id}
-                                id={image.id}
-                                storagePath={image.storage_path}
-                                fileName={image.file_name}
-                                altText={image.alt_text}
-                                previewUrl={getImageUrl(image.storage_path)}
-                                width={image.width}
-                                height={image.height}
-                                fileSize={image.file_size}
-                                mimeType={image.mime_type}
-                            />
-                        ))}
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
+

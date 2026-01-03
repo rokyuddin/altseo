@@ -19,8 +19,8 @@ import { Logo } from "@/components/organisms/logo";
 export function DashboardHeader() {
   const pathname = usePathname();
   return (
-    <header className="fixed top-0 left-0 w-full z-50 p-4 @md:p-8 container-inline-size">
-      <div className="w-full @5xl:max-w-5xl mx-auto bg-card/90 backdrop-blur-xl border rounded-full px-4 @md:px-6 py-2 @md:py-4 flex items-center justify-between shadow-[0_8px_32px_rgba(0,0,0,0.05)] transition-all duration-300">
+    <header className="fixed top-0 left-0 w-full z-50 p-4 md:p-8 container-inline-size">
+      <div className="w-full @7xl:max-w-7xl mx-auto bg-card/60 dark:bg-card/20 backdrop-blur-2xl border border-white/40 dark:border-border/20 rounded-full px-4 md:px-8 py-2 md:py-4 flex items-center justify-between shadow-[0_8px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-all duration-500">
         <Logo />
 
         <div className="flex items-center">

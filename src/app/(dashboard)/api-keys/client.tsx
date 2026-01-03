@@ -123,9 +123,9 @@ export default function ApiKeysClient({
 
         {/* API Documentation */}
         {showDocs && (
-          <div className="bg-blue-50/80 backdrop-blur-sm rounded-[2rem] p-8 border border-blue-100 shadow-sm">
+          <div className="bg-blue-50/80 backdrop-blur-sm rounded-4xl p-8 border border-blue-100 shadow-sm">
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-blue-100 to-green-100 flex-shrink-0">
+              <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-linear-to-br from-blue-100 to-green-100 shrink-0">
                 <Code className="h-6 w-6 text-blue-600" />
               </div>
               <div className="flex-1">
@@ -141,7 +141,7 @@ export default function ApiKeysClient({
                     <h4 className="text-sm font-semibold text-foreground mb-2">
                       Endpoint
                     </h4>
-                    <div className="rounded-[1rem] bg-white/80 backdrop-blur-sm p-4 border border-blue-100">
+                    <div className="rounded-2xl bg-white/80 backdrop-blur-sm p-4 border border-blue-100">
                       <code className="text-sm text-foreground font-mono">
                         POST https://your-domain.com/api/generate-alt-text
                       </code>
@@ -152,7 +152,7 @@ export default function ApiKeysClient({
                     <h4 className="text-sm font-semibold text-foreground mb-2">
                       Authentication
                     </h4>
-                    <div className="rounded-[1rem] bg-white/80 backdrop-blur-sm p-4 border border-blue-100">
+                    <div className="rounded-2xl bg-white/80 backdrop-blur-sm p-4 border border-blue-100">
                       <code className="text-sm text-foreground font-mono">
                         Authorization: Bearer YOUR_API_KEY
                       </code>
@@ -163,7 +163,7 @@ export default function ApiKeysClient({
                     <h4 className="text-sm font-semibold text-foreground mb-2">
                       Example Request (cURL)
                     </h4>
-                    <div className="rounded-[1rem] bg-white/80 backdrop-blur-sm p-4 border border-blue-100 overflow-x-auto">
+                    <div className="rounded-2xl bg-white/80 backdrop-blur-sm p-4 border border-blue-100 overflow-x-auto">
                       <pre className="text-xs text-foreground font-mono">
                         {`curl -X POST https://your-domain.com/api/generate-alt-text \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
@@ -177,7 +177,7 @@ export default function ApiKeysClient({
                     <h4 className="text-sm font-semibold text-foreground mb-2">
                       Example Response
                     </h4>
-                    <div className="rounded-[1rem] bg-white/80 backdrop-blur-sm p-4 border border-blue-100 overflow-x-auto">
+                    <div className="rounded-2xl bg-white/80 backdrop-blur-sm p-4 border border-blue-100 overflow-x-auto">
                       <pre className="text-xs text-foreground font-mono">
                         {`{
   "success": true,
@@ -199,9 +199,9 @@ export default function ApiKeysClient({
 
         {/* New Key Alert */}
         {newKey && (
-          <div className="bg-green-50/80 backdrop-blur-sm rounded-[2rem] p-8 border border-green-200 shadow-sm">
+          <div className="bg-green-50/80 backdrop-blur-sm rounded-4xl p-8 border border-green-200 shadow-sm">
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-green-100 to-emerald-100 flex-shrink-0">
+              <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-linear-to-br from-green-100 to-emerald-100 shrink-0">
                 <Sparkles className="h-6 w-6 text-green-600" />
               </div>
               <div className="flex-1">
@@ -212,7 +212,7 @@ export default function ApiKeysClient({
                   Save this key securely. You won't be able to see it again.
                 </p>
                 <div className="flex items-center gap-3">
-                  <code className="flex-1 rounded-[1rem] bg-white/80 backdrop-blur-sm px-4 py-3 text-sm text-green-900 font-mono border border-green-100">
+                  <code className="flex-1 rounded-2xl bg-white/80 backdrop-blur-sm px-4 py-3 text-sm text-green-900 font-mono border border-green-100">
                     {newKey}
                   </code>
                   <button
@@ -239,19 +239,19 @@ export default function ApiKeysClient({
 
         {/* Error Alert */}
         {error && (
-          <div className="bg-red-50/80 backdrop-blur-sm rounded-[2rem] p-6 border border-red-200 shadow-sm">
+          <div className="bg-red-50/80 backdrop-blur-sm rounded-4xl p-6 border border-red-200 shadow-sm">
             <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
               <p className="text-sm text-red-800 leading-relaxed">{error}</p>
             </div>
           </div>
         )}
 
         {/* Generate Button */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
+        <div className="bg-white/80 backdrop-blur-sm rounded-4xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-green-100 to-blue-100">
+              <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-linear-to-br from-green-100 to-blue-100">
                 <Plus className="h-6 w-6 text-green-600" />
               </div>
               <div>
@@ -297,11 +297,11 @@ export default function ApiKeysClient({
               {keys.map((key) => (
                 <div
                   key={key.id}
-                  className="group bg-white/80 backdrop-blur-sm rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-500 hover:-translate-y-1"
+                  className="group bg-white/80 backdrop-blur-sm rounded-4xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-500 hover:-translate-y-1"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4 flex-1">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-[1rem] bg-gradient-to-br from-stone-100 to-stone-200">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-stone-100 to-stone-200">
                         <Key className="h-5 w-5 text-stone-600" />
                       </div>
                       <div className="flex-1">
@@ -348,7 +348,7 @@ export default function ApiKeysClient({
           </div>
         ) : (
           <div className="bg-white/80 backdrop-blur-sm rounded-[3rem] p-16 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[2rem] bg-gradient-to-br from-stone-100 to-stone-200 mb-6">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-4xl bg-linear-to-br from-stone-100 to-stone-200 mb-6">
               <Key className="h-10 w-10 text-stone-400" />
             </div>
             <h3 className="text-2xl font-bold text-foreground mb-3">
@@ -361,9 +361,9 @@ export default function ApiKeysClient({
         )}
 
         {/* Security Notice */}
-        <div className="bg-stone-50/80 backdrop-blur-sm rounded-[2rem] p-8 border border-stone-200 shadow-sm">
+        <div className="bg-stone-50/80 backdrop-blur-sm rounded-4xl p-8 border border-stone-200 shadow-sm">
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-[1rem] bg-gradient-to-br from-stone-100 to-stone-200 flex-shrink-0">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-stone-100 to-stone-200 shrink-0">
               <Shield className="h-5 w-5 text-stone-600" />
             </div>
             <div>

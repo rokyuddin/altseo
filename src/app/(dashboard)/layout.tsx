@@ -8,13 +8,15 @@ export default function DashboardLayout({
 }) {
 
   return (
-    <div className="min-h-screen  text-foreground font-sans transition-colors duration-500 overflow-x-hidden">
+    <div className="min-h-screen text-foreground font-sans transition-all duration-700 overflow-x-hidden relative">
+      {/* Dynamic Background Elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] animate-pulse-slow" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px] animate-pulse-slow [animation-delay:2s]" />
+      </div>
+
       <DashboardHeader />
-      <main className="relative  min-h-[90vh] max-w-5xl mx-auto py-24">
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[100px] animate-pulse"></div>
-          <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-accent/20 rounded-full blur-[120px]"></div>
-        </div>
+      <main className="relative min-h-[90vh] max-w-7xl mx-auto py-24 md:py-32">
         {children}
       </main>
       <Footer />

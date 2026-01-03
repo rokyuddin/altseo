@@ -5,7 +5,6 @@ import type { UploadedImage, SavedImage } from "../types";
 interface UploadState {
     // State
     images: UploadedImage[];
-    savedImages: SavedImage[];
     isUploading: boolean;
     isLoading: boolean;
     isPro: boolean;
@@ -13,7 +12,6 @@ interface UploadState {
 
     // Actions
     setImages: (images: UploadedImage[]) => void;
-    setSavedImages: (images: SavedImage[]) => void;
     setIsUploading: (isUploading: boolean) => void;
     setIsLoading: (isLoading: boolean) => void;
     setIsPro: (isPro: boolean) => void;
@@ -23,14 +21,12 @@ interface UploadState {
     addImages: (files: File[]) => void;
     removeImage: (index: number) => void;
     updateImage: (index: number, updates: Partial<UploadedImage>) => void;
-    loadSavedImages: () => Promise<void>;
     initData: (allowGuest: boolean) => Promise<void>;
     reset: () => void;
 }
 
 const initialState = {
     images: [],
-    savedImages: [],
     isUploading: false,
     isLoading: true,
     isPro: false,
@@ -42,7 +38,6 @@ export const useUploadStore = create<UploadState>((set, get) => ({
 
     // Simple setters
     setImages: (images) => set({ images }),
-    setSavedImages: (savedImages) => set({ savedImages }),
     setIsUploading: (isUploading) => set({ isUploading }),
     setIsLoading: (isLoading) => set({ isLoading }),
     setIsPro: (isPro) => set({ isPro }),
@@ -82,20 +77,7 @@ export const useUploadStore = create<UploadState>((set, get) => ({
         }));
     },
 
-    // Load saved images from database
-    loadSavedImages: async () => {
-        const supabase = createClient();
-        const { data, error } = await supabase
-            .from("images")
-            .select("*")
-            .order("created_at", { ascending: false });
-
-        if (!error) {
-            set({ savedImages: data || [] });
-        }
-    },
-
-    // Initialize data (user, subscription, images)
+    // Initialize data (user, subscription)
     initData: async (allowGuest = false) => {
         set({ isLoading: true });
         const supabase = createClient();
@@ -112,9 +94,6 @@ export const useUploadStore = create<UploadState>((set, get) => ({
                 .single();
 
             set({ isPro: subscription?.plan_type === "pro" });
-
-            // Load saved images
-            await get().loadSavedImages();
         }
 
         set({ isLoading: false });
@@ -128,3 +107,4 @@ export const useUploadStore = create<UploadState>((set, get) => ({
         set(initialState);
     },
 }));
+

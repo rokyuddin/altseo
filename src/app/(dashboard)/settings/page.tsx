@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Crown, Key, TrendingUp, User, Shield, Zap, Leaf } from "lucide-react";
 
-export const dynamic = 'force-dynamic';
+
 
 export default async function SettingsPage() {
   const user = await getUser();
@@ -62,15 +62,15 @@ export default async function SettingsPage() {
 
         <div className="space-y-6">
           {/* Plan Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
+          <div className="bg-white/80 backdrop-blur-sm rounded-4xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-4">
                 {isPro ? (
-                  <div className="flex h-16 w-16 items-center justify-center rounded-[1.5rem] bg-gradient-to-br from-yellow-400 via-orange-400 to-yellow-500 shadow-lg">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-linear-to-br from-yellow-400 via-orange-400 to-yellow-500 shadow-lg">
                     <Crown className="h-8 w-8 text-white" />
                   </div>
                 ) : (
-                  <div className="flex h-16 w-16 items-center justify-center rounded-[1.5rem] bg-gradient-to-br from-green-100 to-blue-100">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-linear-to-br from-green-100 to-blue-100">
                     <Leaf className="h-8 w-8 text-green-600" />
                   </div>
                 )}
@@ -88,7 +88,7 @@ export default async function SettingsPage() {
               {!isPro && (
                 <Link
                   href="/pricing"
-                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-green-600 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-green-600 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
                 >
                   <TrendingUp className="h-4 w-4" />
                   Upgrade to Pro
@@ -97,7 +97,7 @@ export default async function SettingsPage() {
             </div>
 
             {!isPro && (
-              <div className="mt-6 rounded-[1.5rem] bg-gradient-to-br from-green-50 to-blue-50 p-6 border border-green-100/50">
+              <div className="mt-6 rounded-3xl bg-linear-to-br from-green-50 to-blue-50 p-6 border border-green-100/50">
                 <h3 className="text-sm font-semibold text-foreground mb-3">
                   Unlock Pro Features:
                 </h3>
@@ -138,7 +138,7 @@ export default async function SettingsPage() {
           </div>
 
           {/* Usage Statistics */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
+          <div className="bg-white/80 backdrop-blur-sm rounded-4xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
             <h2 className="text-xl font-bold text-foreground mb-6">
               Usage Statistics
             </h2>
@@ -164,7 +164,7 @@ export default async function SettingsPage() {
                     </div>
                     <div className="h-3 w-full overflow-hidden rounded-full bg-stone-100">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-green-400 to-blue-400 transition-all duration-500"
+                        className="h-full rounded-full bg-linear-to-r from-green-400 to-blue-400 transition-all duration-500"
                         style={{
                           width: `${
                             (rateLimit.remaining / rateLimit.limit) * 100
@@ -180,10 +180,10 @@ export default async function SettingsPage() {
 
           {/* API Keys Section (Pro Only) */}
           {isPro && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
+            <div className="bg-white/80 backdrop-blur-sm rounded-4xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-blue-100 to-green-100">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-linear-to-br from-blue-100 to-green-100">
                     <Key className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
@@ -214,9 +214,9 @@ export default async function SettingsPage() {
           )}
 
           {/* Account Information */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
+          <div className="bg-white/80 backdrop-blur-sm rounded-4xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
             <div className="flex items-center gap-4 mb-6">
-              <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-stone-100 to-stone-200">
+              <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-linear-to-br from-stone-100 to-stone-200">
                 <User className="h-6 w-6 text-stone-600" />
               </div>
               <h2 className="text-xl font-bold text-foreground">
@@ -254,7 +254,7 @@ export default async function SettingsPage() {
           </div>
 
           {/* Danger Zone */}
-          <div className="bg-red-50/80 backdrop-blur-sm rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-red-100">
+          <div className="bg-red-50/80 backdrop-blur-sm rounded-4xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-red-100">
             <h2 className="text-xl font-bold text-red-900 mb-2">Danger Zone</h2>
             <p className="text-sm text-red-800 mb-6">
               Once you sign out, you'll need to log in again to access your

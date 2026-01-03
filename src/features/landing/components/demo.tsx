@@ -11,7 +11,7 @@ export function DemoSection() {
                 <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-6 xs:mb-8 text-foreground leading-tight">
                     Experience the Magic
                 </h2>
-                <p className="text-base sm:text-xl text-muted-foreground max-w-xs xs:max-w-sm sm:max-w-xl md:max-w-2xl mx-auto leading-relaxed px-2 xs:px-0">
+                <p className="text-base sm:text-xl text-muted-foreground max-w-xs sm:max-w-xl md:max-w-2xl mx-auto leading-relaxed px-2 xs:px-0">
                     Upload an image and see how AI transforms it into accessible,
                     SEO-optimized alt text. No signup required to try.
                 </p>
@@ -19,7 +19,6 @@ export function DemoSection() {
                     <Link href="/upload">
                         <Button
                             size="lg"
-                            className="w-full xs:w-auto rounded-full h-10 md:h-16 px-6 md:px-12 text-base bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
                         >
                             Upload Your First Image
                         </Button>

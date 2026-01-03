@@ -295,14 +295,14 @@
 }
 
 /* Container Query Variants */
-@custom-variant xs (@container (min-width: 20rem));
-@custom-variant sm (@container (min-width: 24rem));
-@custom-variant md (@container (min-width: 28rem));
-@custom-variant lg (@container (min-width: 32rem));
-@custom-variant xl (@container (min-width: 36rem));
-@custom-variant 2xl (@container (min-width: 42rem));
-@custom-variant 3xl (@container (min-width: 48rem));
-@custom-variant 4xl (@container (min-width: 56rem));
-@custom-variant 5xl (@container (min-width: 64rem));
-@custom-variant 6xl (@container (min-width: 72rem));
-@custom-variant 7xl (@container (min-width: 80rem));
+@custom-variant c-xs (@container (min-width: 20rem));
+@custom-variant c-sm (@container (min-width: 24rem));
+@custom-variant c-md (@container (min-width: 28rem));
+@custom-variant c-lg (@container (min-width: 32rem));
+@custom-variant c-xl (@container (min-width: 36rem));
+@custom-variant c-2xl (@container (min-width: 42rem));
+@custom-variant c-3xl (@container (min-width: 48rem));
+@custom-variant c-4xl (@container (min-width: 56rem));
+@custom-variant c-5xl (@container (min-width: 64rem));
+@custom-variant c-6xl (@container (min-width: 72rem));
+@custom-variant c-7xl (@container (min-width: 80rem));

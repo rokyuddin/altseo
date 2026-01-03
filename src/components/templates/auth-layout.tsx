@@ -2,8 +2,10 @@ import { Logo } from '@/components/organisms/logo'
 import { Leaf, CheckCircle2, Sparkles } from 'lucide-react'
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
+  console.log("auth")
+
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 relative overflow-hidden">
+    <div className="min-h-screen grid md:grid-cols-2 relative overflow-hidden">
       {/* Organic Background Pattern */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] dark:opacity-[0.05]">
@@ -14,7 +16,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       </div>
 
       {/* Visual Side - Enhanced Organic Natural Theme */}
-      <div className="hidden lg:flex flex-col justify-between p-12 text-foreground relative overflow-hidden bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
+      <div className="hidden md:flex flex-col justify-between p-12 text-foreground relative overflow-hidden bg-linear-to-br from-primary/5 via-secondary/5 to-accent/5">
         {/* Organic blob shapes background */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 -left-20 w-96 h-96 rounded-full bg-primary blur-3xl" />
@@ -90,7 +92,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       </div>
       
       {/* Form Side - Organic Natural */}
-      <div className="flex flex-col items-center justify-center p-8 lg:p-12 bg-background relative min-h-screen">
+      <div className="flex flex-col items-center justify-center p-8 md:p-12 bg-background relative min-h-screen">
         {/* Subtle grain texture */}
         <div 
           className="absolute inset-0 opacity-[0.015] pointer-events-none"
@@ -100,7 +102,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         />
         
         {/* Logo for mobile view */}
-        <div className="lg:hidden mb-8 relative z-10">
+        <div className="mb-8 relative z-10 md:hidden">
           <Logo size="md" />
         </div>
         

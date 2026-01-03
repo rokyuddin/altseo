@@ -23,7 +23,6 @@ export function ImageUploader({ allowGuest = false }: ImageUploaderProps) {
   // Get state and actions from store
   const {
     images,
-    savedImages,
     isUploading,
     isLoading,
     isPro,
@@ -32,9 +31,10 @@ export function ImageUploader({ allowGuest = false }: ImageUploaderProps) {
     addImages,
     removeImage,
     updateImage,
-    loadSavedImages,
+    setImages,
     initData,
   } = useUploadStore();
+
 
   useEffect(() => {
     initData(allowGuest);
@@ -81,7 +81,26 @@ export function ImageUploader({ allowGuest = false }: ImageUploaderProps) {
 
       if (error) throw error;
 
-      updateImage(index, { uploadProgress: 70 });
+      updateImage(index, { uploadProgress: 60 });
+
+      // NEW: Generate alt text automatically
+      let generatedAltText = "";
+      try {
+        const genResponse = await fetch("/api/generate-alt-text", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ storagePath: data.path, variant: "default" }),
+        });
+        const genData = await genResponse.json();
+        if (genResponse.ok) {
+          generatedAltText = genData.altText;
+        }
+      } catch (err) {
+        console.error("Auto-generation failed:", err);
+        // We continue even if auto-gen fails, the user can regenerate later
+      }
+
+      updateImage(index, { uploadProgress: 80 });
 
       const metadataResult = await saveImageMetadata({
         storagePath: data.path,
@@ -90,13 +109,14 @@ export function ImageUploader({ allowGuest = false }: ImageUploaderProps) {
         mimeType: image.file.type,
         width: dimensions.width,
         height: dimensions.height,
+        altText: generatedAltText,
       });
 
       await supabase.rpc("increment_rate_limit", { p_user_id: user.id });
 
-      // Refresh limit and saved images
+      // Refresh limit
       router.refresh();
-      await loadSavedImages();
+
 
       updateImage(index, {
         uploading: false,
@@ -105,6 +125,7 @@ export function ImageUploader({ allowGuest = false }: ImageUploaderProps) {
         storagePath: data.path,
         imageId: metadataResult.data?.id
       });
+
 
       return data.path;
     } catch (error) {
@@ -127,7 +148,11 @@ export function ImageUploader({ allowGuest = false }: ImageUploaderProps) {
     }
 
     setIsUploading(false);
+    // Remove successfully uploaded images from the current state
+    const currentImages = useUploadStore.getState().images;
+    setImages(currentImages.filter((img) => !img.uploaded));
   };
+
 
   const getImageUrl = (storagePath: string) => {
     if (storagePath.startsWith('blob:') || storagePath.startsWith('data:')) return storagePath;
@@ -175,13 +200,22 @@ export function ImageUploader({ allowGuest = false }: ImageUploaderProps) {
 
       <UploadList
         images={images}
-        savedImages={savedImages}
         isUploading={isUploading}
         onUploadAll={handleUploadAll}
-        onUploadOne={(idx) => uploadToSupabase(images[idx], idx)}
+        onUploadOne={async (idx) => {
+          const result = await uploadToSupabase(images[idx], idx);
+          if (result) {
+            // Small delay to show completion before removing
+            setTimeout(() => {
+              removeImage(idx);
+            }, 1500);
+          }
+        }}
         onRemove={removeImage}
         getImageUrl={getImageUrl}
       />
+
+
     </div>
   );
 }

@@ -1,7 +1,6 @@
 export const NAV_LINKS = [
     { href: "/dashboard", label: "Dashboard" },
     { href: "/upload", label: "Upload" },
-    { href: "/history", label: "History" },
     { href: "/settings", label: "Settings" },
     { href: "/api-keys", label: "API Keys" },
 ];
