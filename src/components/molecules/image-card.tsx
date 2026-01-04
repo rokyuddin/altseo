@@ -1,11 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/atoms/card'
 import { AltSEOGenerator } from '@/features/upload/components/alt-text-generator'
-import { X, Image as ImageIcon, FileImage, CheckCircle, Info } from 'lucide-react'
+import { X, Image as ImageIcon, CheckCircle, Info, Maximize2, Trash2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
-import { createClient } from '@/lib/supabase/client'
 import { Badge } from '@/components/atoms/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/atoms/tooltip'
 import {
@@ -27,8 +25,8 @@ import {
   DialogDescription,
   DialogTrigger,
 } from "@/components/atoms/dialog"
-import { Trash2, Loader2, List, LayoutGrid, Maximize2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useUploadStore } from '@/features/upload/store/upload-store'
 
 interface ImageCardProps {
   id: string
@@ -47,6 +45,7 @@ interface ImageCardProps {
   className?: string
   onGenerated?: (altText: string) => void
   onUpload?: () => void
+  index?: number
 }
 
 export function ImageCard({
@@ -66,19 +65,24 @@ export function ImageCard({
   className,
   onGenerated,
   onUpload,
+  index,
 }: ImageCardProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState(true)
-  const [showPreview, setShowPreview] = useState(false)
-  const supabase = createClient()
+  // Zustand State
+  const isAuthenticated = useUploadStore((state) => state.isAuthenticated)
+  const storeImage = useUploadStore((state) => {
+    if (index !== undefined) return state.images[index];
+    return state.standaloneStates[id];
+  });
+  const updateStore = useUploadStore((state) => index !== undefined ? state.updateImage : state.updateStandaloneState);
 
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
-  const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    setIsAuthenticated(!!user)
-  }
+  const showPreview = !!storeImage?.showPreview;
+  const setShowPreview = (show: boolean) => {
+    if (index !== undefined) {
+      (updateStore as any)(index, { showPreview: show });
+    } else {
+      (updateStore as any)(id, { showPreview: show });
+    }
+  };
 
   return (
     <Card className={cn(
@@ -250,12 +254,11 @@ export function ImageCard({
             viewMode === 'list' ? "mt-2" : ""
           )}>
             <AltSEOGenerator
+              index={index}
               imageId={id}
               storagePath={storagePath}
               fileName={fileName}
               initialAltText={altText}
-              allowDownload={true}
-              isAuthenticated={isAuthenticated}
               onGenerated={onGenerated}
               onUpload={onUpload}
             />

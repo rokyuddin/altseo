@@ -1,9 +1,10 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useRef } from 'react'
 import { Upload, AlertCircle, FileImage } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Alert, AlertDescription } from '@/components/atoms/alert'
+import { useUploadStore } from '@/features/upload/store/upload-store'
 
 interface UploadZoneProps {
   onFilesSelected: (files: File[]) => void
@@ -20,8 +21,12 @@ export function UploadZone({
   multiple = true,
   className,
 }: UploadZoneProps) {
-  const [isDragging, setIsDragging] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  // Zustand State
+  const isDragging = useUploadStore((state) => state.isDragging)
+  const setIsDragging = useUploadStore((state) => state.setIsDragging)
+  const error = useUploadStore((state) => state.uploadError)
+  const setError = useUploadStore((state) => state.setUploadError)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const validateFiles = useCallback(
     (files: FileList | null) => {
@@ -52,18 +57,18 @@ export function UploadZone({
 
       return validFiles
     },
-    [accept, maxSize]
+    [accept, maxSize, setError]
   )
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     setIsDragging(true)
-  }, [])
+  }, [setIsDragging])
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     setIsDragging(false)
-  }, [])
+  }, [setIsDragging])
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
@@ -75,14 +80,20 @@ export function UploadZone({
         onFilesSelected(files)
       }
     },
-    [validateFiles, onFilesSelected]
+    [validateFiles, onFilesSelected, setIsDragging]
   )
 
   const handleFileInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
       const files = validateFiles(e.target.files)
       if (files.length > 0) {
         onFilesSelected(files)
+      }
+      // Reset input value so same file can be selected again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
       }
     },
     [validateFiles, onFilesSelected]
@@ -102,10 +113,12 @@ export function UploadZone({
         )}
       >
         <input
+          ref={fileInputRef}
           type="file"
           accept={accept.join(',')}
           multiple={multiple}
           onChange={handleFileInput}
+          onClick={(e) => e.stopPropagation()}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
         />
 

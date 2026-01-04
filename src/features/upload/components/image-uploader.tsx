@@ -90,25 +90,13 @@ export function ImageUploader({ allowGuest = false }: ImageUploaderProps) {
 
       updateImage(index, { uploadProgress: 60 });
 
-      // Use pre-generated alt text if available
+      // Use pre-generated alt text if available or generate one
       let generatedAltText = image.altText || "";
 
       if (!generatedAltText) {
-        updateImage(index, { uploadProgress: 70 });
-        try {
-          const genResponse = await fetch("/api/generate-alt-text", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ storagePath: data.path, variant: "default" }),
-          });
-          const genData = await genResponse.json();
-          if (genResponse.ok) {
-            generatedAltText = genData.altText;
-          }
-        } catch (err) {
-          console.error("Auto-generation failed:", err);
-          // We continue even if auto-gen fails, the user can regenerate later
-        }
+        updateImage(index, { uploadProgress: 75 });
+        const result = await useUploadStore.getState().generateAltText(index);
+        generatedAltText = result || "";
       }
 
       updateImage(index, { uploadProgress: 80 });

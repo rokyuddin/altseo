@@ -1,23 +1,27 @@
 'use client'
 
-import { useState } from 'react'
 import { ImageCard } from '@/components/molecules/image-card'
 import { Button } from '@/components/atoms/button'
-import { LayoutGrid, List, Loader2 } from 'lucide-react'
+import { LayoutGrid, List } from 'lucide-react'
 import { deleteImage } from '../actions/upload-actions'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
+import { useUploadStore } from '../store/upload-store'
 
 interface HistoryResultsProps {
   initialResults: any[]
 }
 
 export function HistoryResults({ initialResults }: HistoryResultsProps) {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [deletingId, setDeletingId] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
+
+  // Zustand State
+  const viewMode = useUploadStore((state) => state.historyViewMode)
+  const setViewMode = useUploadStore((state) => state.setHistoryViewMode)
+  const deletingId = useUploadStore((state) => state.deletingImageId)
+  const setDeletingId = useUploadStore((state) => state.setDeletingImageId)
 
   const getImageUrl = (storagePath: string) => {
     if (storagePath.startsWith('blob:') || storagePath.startsWith('data:')) return storagePath;

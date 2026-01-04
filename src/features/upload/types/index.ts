@@ -8,6 +8,13 @@ export interface UploadedImage {
   storagePath?: string;
   imageId?: string;
   altText?: string;
+  generating?: boolean;
+  saving?: boolean;
+  isEditing?: boolean;
+  editingText?: string;
+  variant?: string;
+  copied?: boolean;
+  showPreview?: boolean;
 }
 
 export interface SavedImage {

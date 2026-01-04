@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { Button } from '@/components/atoms/button'
 import {
   Loader2,
@@ -13,21 +13,17 @@ import {
   RefreshCw,
   Upload,
   MoreHorizontal,
-  FileText,
-  FileJson
 } from 'lucide-react'
 import { Textarea } from '@/components/atoms/textarea'
 import { updateAltText } from '@/features/upload/actions/upload-actions'
-import { downloadAsTxt, downloadAsJson } from '@/lib/download'
+import { downloadAsTxt } from '@/lib/download'
+import { useUploadStore } from '../store/upload-store'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
 } from '@/components/atoms/dropdown-menu'
 import {
   Select,
@@ -41,33 +37,53 @@ import { cn } from '@/lib/utils'
 type Variant = 'default' | 'seo' | 'long' | 'accessibility'
 
 interface AltSEOGeneratorProps {
+  index?: number
   imageId: string
   storagePath: string
   fileName?: string
   initialAltText?: string | null
   onGenerated?: (altText: string) => void
-  allowDownload?: boolean
-  isAuthenticated?: boolean
   onUpload?: () => void
 }
 
 export function AltSEOGenerator({
+  index,
   imageId,
   storagePath,
   fileName = 'image',
   initialAltText,
   onGenerated,
-  allowDownload = true,
-  isAuthenticated = true,
   onUpload,
 }: AltSEOGeneratorProps) {
-  const [altText, setAltText] = useState(initialAltText || '')
-  const [variant, setVariant] = useState<Variant>('default')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [isEditing, setIsEditing] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  // Zustand Store Selectors
+  const storeImage = useUploadStore((state) => {
+    if (index !== undefined) return state.images[index];
+    return state.standaloneStates[imageId];
+  });
+
+  const storeGenerateAltText = useUploadStore((state) => state.generateAltText);
+  const storeUpdateImage = useUploadStore((state) => state.updateImage);
+  const storeUpdateStandalone = useUploadStore((state) => state.updateStandaloneState);
+
+  // Helper to update state correctly based on context (indexed vs standalone)
+  const updateState = (updates: any) => {
+    if (index !== undefined) {
+      storeUpdateImage(index, updates);
+    } else {
+      storeUpdateStandalone(imageId, updates);
+    }
+  };
+
+  // Derived Values from Store
+  const currentAltText = storeImage?.altText ?? (initialAltText || '');
+  const isGenerating = !!storeImage?.generating;
+  const isSaving = !!storeImage?.saving;
+  const error = storeImage?.error;
+  const isEditing = !!storeImage?.isEditing;
+  const editingText = storeImage?.editingText ?? currentAltText;
+  const variant = (storeImage?.variant as Variant) || 'default';
+  const copied = !!storeImage?.copied;
+
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -78,8 +94,14 @@ export function AltSEOGenerator({
   }, [isEditing])
 
   const generateAltText = async () => {
-    setIsGenerating(true)
-    setError(null)
+    if (index !== undefined) {
+      const result = await storeGenerateAltText(index, variant);
+      if (result) onGenerated?.(result);
+      return;
+    }
+
+    // Manual generation for standalone/history images
+    updateState({ generating: true, error: null });
 
     try {
       let finalStoragePath = storagePath
@@ -87,20 +109,15 @@ export function AltSEOGenerator({
 
       if (storagePath.startsWith('blob:')) {
         isGuest = true
-        try {
-          const response = await fetch(storagePath)
-          const blob = await response.blob()
-          finalStoragePath = await new Promise<string>((resolve) => {
-            const reader = new FileReader()
-            reader.onloadend = () => resolve(reader.result as string)
-            reader.readAsDataURL(blob)
-          })
-        } catch (err) {
-          throw new Error('Failed to process image. Please try again.')
-        }
+        const response = await fetch(storagePath)
+        const blob = await response.blob()
+        finalStoragePath = await new Promise<string>((resolve) => {
+          const reader = new FileReader()
+          reader.onloadend = () => resolve(reader.result as string)
+          reader.readAsDataURL(blob)
+        })
       } else if (storagePath.startsWith('data:')) {
         isGuest = true
-        finalStoragePath = storagePath
       }
 
       const response = await fetch('/api/generate-alt-text', {
@@ -111,67 +128,61 @@ export function AltSEOGenerator({
 
       const data = await response.json()
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate alt text')
-      }
+      if (!response.ok) throw new Error(data.error || 'Failed to generate alt text')
 
-      setAltText(data.altText)
+      updateState({ altText: data.altText, generating: false });
       onGenerated?.(data.altText)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate alt text')
-    } finally {
-      setIsGenerating(false)
+      updateState({
+        error: err instanceof Error ? err.message : 'Failed to generate alt text',
+        generating: false
+      });
     }
   }
 
   const handleSave = async () => {
-    setIsSaving(true)
-    setError(null)
+    updateState({ saving: true, error: null });
 
     try {
-      const result = await updateAltText(imageId, altText)
-      if (result.error) {
-        throw new Error(result.error)
-      }
-      setIsEditing(false)
+      const result = await updateAltText(imageId, editingText)
+      if (result.error) throw new Error(result.error)
+
+      updateState({ altText: editingText, isEditing: false, saving: false });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save alt text')
-    } finally {
-      setIsSaving(false)
+      updateState({
+        error: err instanceof Error ? err.message : 'Failed to save',
+        saving: false
+      });
     }
   }
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(altText)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      await navigator.clipboard.writeText(currentAltText)
+      updateState({ copied: true });
+      setTimeout(() => updateState({ copied: false }), 2000)
     } catch (err) {
       console.error('Failed to copy:', err)
     }
   }
 
   const handleDownloadTxt = () => {
-    downloadAsTxt(altText, fileName)
-  }
-
-  const handleDownloadJson = () => {
-    downloadAsJson(altText, fileName, {
-      imageId,
-      storagePath,
-    })
+    downloadAsTxt(currentAltText, fileName)
   }
 
   const handleRetry = () => {
-    setError(null)
+    updateState({ error: null });
     generateAltText()
   }
 
-  if (!altText) {
+  if (!currentAltText) {
     return (
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <Select value={variant} onValueChange={(value) => setVariant(value as Variant)}>
+          <Select
+            value={variant}
+            onValueChange={(v) => updateState({ variant: v as Variant })}
+          >
             <SelectTrigger className="w-full h-11 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm font-medium">
               <SelectValue placeholder="Style" />
             </SelectTrigger>
@@ -199,8 +210,8 @@ export function AltSEOGenerator({
 
         {error && (
           <div className="p-3 bg-red-50 text-red-600 rounded-xl text-xs font-semibold flex items-center justify-between">
-            <span>{error}</span>
-            <Button onClick={handleRetry} size="sm" variant="ghost" className="h-7 px-2 hover:bg-red-100">
+            <span className="truncate mr-2">{error}</span>
+            <Button onClick={handleRetry} size="sm" variant="ghost" className="h-7 px-2 hover:bg-red-100 shrink-0">
               <RefreshCw className="size-4" />
             </Button>
           </div>
@@ -216,15 +227,15 @@ export function AltSEOGenerator({
         {isEditing ? (
           <Textarea
             ref={textareaRef}
-            value={altText}
-            onChange={(e) => setAltText(e.target.value)}
+            value={editingText}
+            onChange={(e) => updateState({ editingText: e.target.value })}
             className="min-h-[120px] w-full bg-zinc-50 border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-2xl p-4 text-sm font-medium leading-relaxed focus:ring-2 ring-primary/20 resize-none"
             placeholder="Edit text..."
           />
         ) : (
           <div className="relative min-h-[100px] flex flex-col z-0 px-1">
             <p className="text-sm font-medium leading-relaxed text-zinc-700 dark:text-zinc-300 italic">
-              "{altText}"
+              "{currentAltText}"
             </p>
           </div>
         )}
@@ -238,7 +249,7 @@ export function AltSEOGenerator({
           <div className="flex items-center gap-2 w-full">
             <Button
               size="sm"
-              onClick={() => setIsEditing(false)}
+              onClick={() => updateState({ isEditing: false })}
               variant="ghost"
               className="flex-1 rounded-full text-xs font-bold h-9"
             >
@@ -285,55 +296,41 @@ export function AltSEOGenerator({
                       <Upload className="mr-3 h-4 w-4" />
                       Upload to Supabase
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-zinc-100 dark:bg-zinc-800" />
+                    <DropdownMenuSeparator />
                   </>
                 )}
 
-                <DropdownMenuItem onClick={copyToClipboard} className="rounded-xl h-11 font-medium cursor-pointer">
+                <DropdownMenuItem onClick={copyToClipboard} >
                   {copied ? (
                     <Check className="mr-3 h-4 w-4 text-green-500" />
                   ) : (
-                    <Copy className="mr-3 h-4 w-4 text-zinc-500" />
+                    <Copy className="mr-2 size-4" />
                   )}
                   {copied ? "Copied!" : "Copy Alt Text"}
                 </DropdownMenuItem>
 
-                <DropdownMenuItem onClick={() => setIsEditing(true)} className="rounded-xl h-11 font-medium cursor-pointer">
-                  <Edit2 className="mr-3 h-4 w-4 text-zinc-500" />
+                <DropdownMenuItem onClick={() => {
+                  updateState({ editingText: currentAltText, isEditing: true });
+                }} >
+                  <Edit2 className="mr-2 size-4" />
                   Edit Text
                 </DropdownMenuItem>
 
-                <DropdownMenuItem onClick={generateAltText} disabled={isGenerating} className="rounded-xl h-11 font-medium cursor-pointer">
+                <DropdownMenuItem aria-disabled={isGenerating} onClick={generateAltText} disabled={isGenerating} >
                   {isGenerating ? (
-                    <Loader2 className="mr-3 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 size-4 animate-spin" />
                   ) : (
-                    <RefreshCw className="mr-3 h-4 w-4 text-zinc-500" />
+                    <RefreshCw className="mr-2 size-4" />
                   )}
                   Regenerate
                 </DropdownMenuItem>
 
-                <DropdownMenuSeparator className="bg-zinc-100 dark:bg-zinc-800" />
+                <DropdownMenuSeparator />
 
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger className="rounded-xl h-11 font-medium cursor-pointer">
-                    <Download className="mr-3 h-4 w-4 text-zinc-500" />
-                    Download
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent
-                    sideOffset={14}
-                    alignOffset={-5}
-                    className="rounded-xl p-1.5 shadow-xl border-white/40 dark:border-zinc-800 backdrop-blur-xl bg-white/95 dark:bg-zinc-900/95"
-                  >
-                    <DropdownMenuItem onClick={handleDownloadTxt} className="rounded-xl h-10 font-medium cursor-pointer">
-                      <FileText className="mr-2.5 h-4 w-4" />
-                      As Text (.txt)
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleDownloadJson} className="rounded-xl h-10 font-medium cursor-pointer">
-                      <FileJson className="mr-2.5 h-4 w-4" />
-                      As JSON (.json)
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
+                <DropdownMenuItem onClick={handleDownloadTxt}>
+                  <Download className="mr-2 size-4" />
+                  Download
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

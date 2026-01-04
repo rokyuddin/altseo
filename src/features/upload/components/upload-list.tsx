@@ -109,6 +109,7 @@ export function UploadList({
                         style={{ animationDelay: `${index * 80}ms`, animationDuration: "600ms" }}
                     >
                         <ImageCard
+                            index={index}
                             id={image.imageId || `pending-${index}`}
                             storagePath={image.storagePath || image.preview}
                             fileName={image.file.name}
