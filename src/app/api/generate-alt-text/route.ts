@@ -3,7 +3,7 @@ import { createGroq } from "@ai-sdk/groq";
 import { generateText } from "ai";
 import { type NextRequest, NextResponse } from "next/server";
 import { checkRateLimit, incrementRateLimit } from "@/lib/rate-limit";
-import { createClient } from "@/lib/supabase/server";
+import { createClientServer } from "@/lib/supabase/server";
 
 const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY,
@@ -31,7 +31,7 @@ function sanitizeText(text: string): string {
 }
 
 // AI Generation Helper
-async function performAiGeneration(
+export async function performAiGeneration(
   imageUrl: string,
   variant: string,
 ) {
@@ -55,7 +55,7 @@ async function performAiGeneration(
 
 async function getUserFromRequest(
   request: NextRequest,
-  supabase: Awaited<ReturnType<typeof createClient>>,
+  supabase: Awaited<ReturnType<typeof createClientServer>>,
 ) {
   const authHeader = request.headers.get("authorization");
   if (authHeader?.startsWith("Bearer ")) {
@@ -104,7 +104,7 @@ async function getUserFromRequest(
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
+    const supabase = await createClientServer();
     const body = await request.json();
     const { imageId, storagePath, variant = "default", isGuest = false } = body;
 

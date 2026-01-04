@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClientServer } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 interface SaveImageMetadataInput {
@@ -15,7 +15,7 @@ interface SaveImageMetadataInput {
 
 export async function saveImageMetadata(input: SaveImageMetadataInput) {
   try {
-    const supabase = await createClient()
+    const supabase = await createClientServer()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -53,7 +53,7 @@ export async function saveImageMetadata(input: SaveImageMetadataInput) {
 
 export async function getUserImages() {
   try {
-    const supabase = await createClient()
+    const supabase = await createClientServer()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -80,7 +80,7 @@ export async function getUserImages() {
 
 export async function updateAltText(imageId: string, altText: string) {
   try {
-    const supabase = await createClient()
+    const supabase = await createClientServer()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -110,7 +110,7 @@ export async function updateAltText(imageId: string, altText: string) {
 
 export async function deleteImage(imageId: string, storagePath: string) {
   try {
-    const supabase = await createClient()
+    const supabase = await createClientServer()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {

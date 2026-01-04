@@ -14,6 +14,7 @@ import { NAV_LINKS } from "@/lib/constants";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/organisms/logo";
+import { signOut } from "@/features/auth/actions/auth-actions";
 
 
 export function DashboardHeader() {
@@ -55,6 +56,12 @@ export function DashboardHeader() {
                     </Link>
                   );
                 })}
+                <Button
+                  variant="destructive"
+                  onClick={() => signOut()}
+                >
+                  Sign Out
+                </Button>
               </nav>
             </SheetContent>
           </Sheet>
@@ -77,6 +84,13 @@ export function DashboardHeader() {
                 </Link>
               );
             })}
+            <Button
+              variant="destructive"
+
+              onClick={() => signOut()}
+            >
+              Sign Out
+            </Button>
           </nav>
         </div>
       </div>

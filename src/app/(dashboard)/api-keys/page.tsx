@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { getUser, getUserProfile } from "@/lib/auth/get-user";
-import { createClient } from "@/lib/supabase/server";
+import { getUser, getUserProfile } from "@/lib/auth";
+import { createClientServer } from "@/lib/supabase/server";
 import ApiKeysClient from "./client";
 
 
@@ -20,7 +20,7 @@ export default async function ApiKeysPage() {
     redirect("/settings");
   }
 
-  const supabase = await createClient();
+  const supabase = await createClientServer();
   const { data: apiKeys } = await supabase
     .from("api_keys")
     .select("*")

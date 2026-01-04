@@ -1,6 +1,7 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClientServer } from '@/lib/supabase/server'
+import { getUser } from './auth'
 
 export type PlanType = 'free' | 'pro'
 
@@ -15,8 +16,8 @@ export interface UserSubscription {
 
 export async function getUserPlan(userId: string): Promise<PlanType> {
   try {
-    const supabase = await createClient()
-    
+    const supabase = await createClientServer()
+
     const { data, error } = await supabase
       .from('user_subscriptions')
       .select('plan_type')
@@ -37,8 +38,8 @@ export async function getUserPlan(userId: string): Promise<PlanType> {
 
 export async function getUserSubscription(userId: string): Promise<UserSubscription | null> {
   try {
-    const supabase = await createClient()
-    
+    const supabase = await createClientServer()
+
     const { data, error } = await supabase
       .from('user_subscriptions')
       .select('*')
@@ -59,6 +60,14 @@ export async function getUserSubscription(userId: string): Promise<UserSubscript
 export async function isProUser(userId: string): Promise<boolean> {
   const plan = await getUserPlan(userId)
   return plan === 'pro'
+}
+
+export async function isCurrentUserPro() {
+  const user = await getUser()
+  if (!user) {
+    return false
+  }
+  return await isProUser(user.id)
 }
 
 export async function canUploadMultiple(userId: string): Promise<boolean> {

@@ -1,11 +1,11 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClientServer } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function POST() {
   try {
-    const supabase = await createClient()
+    const supabase = await createClientServer()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {

@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClientServer } from "@/lib/supabase/server";
 import { format } from "date-fns";
 import Link from "next/link";
 import {
@@ -16,7 +16,7 @@ interface HistoryListProps {
 }
 
 export async function HistoryList({ userId, isPro }: HistoryListProps) {
-  const supabase = await createClient();
+  const supabase = await createClientServer();
 
   // Free users: last 10, Pro: all
   const limit = isPro ? undefined : 10;

@@ -1,225 +1,287 @@
-"use client";
-
-import { Crown, TrendingUp, AlertCircle, Upload, Zap, CheckCircle, Sparkles, Leaf } from "lucide-react";
+import { getUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { isProUser } from "@/lib/subscription";
+import { cn } from "@/lib/utils";
+import {
+    AlertCircle,
+    CheckCircle,
+    Crown,
+    Leaf,
+    Sparkles,
+    TrendingUp,
+    Upload,
+    Zap,
+} from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/atoms/button";
+import { redirect } from "next/navigation";
+import { use } from "react";
 
-interface UploadHeaderProps {
-    isPro: boolean;
-    rateLimit: {
-        remaining: number;
-        limit: number;
-    };
-    isNearLimit: boolean;
-    isAtLimit: boolean;
+import { Alert, AlertDescription, AlertTitle } from "@/components/atoms/alert";
+import { Button } from "@/components/atoms/button";
+import { Card, CardContent } from "@/components/atoms/card";
+import { Progress } from "@/components/atoms/progress";
+
+interface StatCardProps {
+    icon: React.ElementType;
+    label: string;
+    value: React.ReactNode;
+    variant?: "default" | "warning" | "danger" | "success" | "pro" | "blue";
+    progress?: number;
+    className?: string;
+    contentClassName?: string;
 }
 
-export function UploadHeader({ isPro, rateLimit, isNearLimit, isAtLimit }: UploadHeaderProps) {
+function StatCard({
+    icon: Icon,
+    label,
+    value,
+    variant = "default",
+    progress,
+    className,
+    contentClassName,
+}: StatCardProps) {
+    const variantStyles = {
+        default: "bg-linear-to-br from-stone-100 to-stone-200 text-stone-600 dark:from-stone-800 dark:to-stone-900 dark:text-stone-300",
+        warning: "bg-linear-to-br from-amber-100 to-orange-200 text-orange-700",
+        danger: "bg-linear-to-br from-red-100 to-rose-200 text-red-700",
+        success: "bg-linear-to-br from-emerald-100 to-teal-100 text-emerald-700",
+        pro: "bg-linear-to-br from-green-400 via-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-200/50",
+        blue: "bg-linear-to-br from-sky-100 to-indigo-100 text-sky-700",
+    };
+
+    const borderStyles = {
+        default: "border-stone-200/60 bg-white/40",
+        warning: "border-orange-200 bg-orange-50/50",
+        danger: "border-red-200 bg-red-50/50",
+        success: "border-emerald-200/60 bg-emerald-50/30",
+        pro: "border-emerald-400/30 bg-white/10",
+        blue: "border-sky-200/60 bg-sky-50/30",
+    };
+
+    return (
+        <Card
+            className={cn(
+                "backdrop-blur-xl rounded-[2.5rem] border transition-all duration-500 shadow-[0_10px_40px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] group/card",
+                borderStyles[variant],
+                className
+            )}
+        >
+            <CardContent className={cn("p-7", contentClassName)}>
+                <div className="flex items-center gap-4">
+                    <div
+                        className={cn(
+                            "flex h-16 w-16 items-center justify-center rounded-3xl shadow-sm transition-transform duration-500 group-hover/card:scale-110 group-hover/card:rotate-3",
+                            variantStyles[variant]
+                        )}
+                    >
+                        <Icon className={cn("h-7 w-7", variant === "pro" ? "text-white" : "")} />
+                    </div>
+                    <div>
+                        <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-1 opacity-70">
+                            {label}
+                        </p>
+                        <p className="text-2xl font-bold text-foreground/90 tracking-tight">{value}</p>
+                    </div>
+                </div>
+                {progress !== undefined && (
+                    <div className="mt-6">
+                        <div className="flex justify-between items-center mb-2">
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Usage</span>
+                            <span className="text-[10px] font-bold text-foreground">{Math.round(progress)}%</span>
+                        </div>
+                        <Progress
+                            value={progress}
+                            className="h-2 rounded-full bg-stone-100"
+                            indicatorClassName={cn(
+                                "rounded-full transition-all duration-1000 ease-out",
+                                variant === "danger"
+                                    ? "bg-red-500"
+                                    : variant === "warning"
+                                        ? "bg-linear-to-r from-orange-400 to-amber-500"
+                                        : "bg-linear-to-r from-emerald-400 to-teal-500"
+                            )}
+                        />
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+    );
+}
+
+export function UploadHeader() {
+    const user = use(getUser());
+    if (!user) {
+        redirect("/login");
+    }
+
+    const rateLimit = use(checkRateLimit(user.id));
+    const isPro = use(isProUser(user.id));
+    const isNearLimit = !isPro && rateLimit.remaining <= 3;
+    const isAtLimit = !isPro && rateLimit.remaining === 0;
+
+    let limitVariant: StatCardProps["variant"] = isPro
+        ? "pro"
+        : isAtLimit
+            ? "danger"
+            : isNearLimit
+                ? "warning"
+                : "blue";
+
     return (
         <div className="space-y-8">
             {/* Header Info */}
-            <div className="flex items-start justify-between">
-                <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-primary">
-                        <Leaf className="w-5 h-5" />
-                        <span className="text-sm font-medium tracking-wide">
+            <div className="flex flex-col md:flex-row items-start justify-between gap-8 pb-4">
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3 text-primary animate-in fade-in slide-in-from-left-4 duration-500">
+                        <div className="p-2 bg-primary/10 rounded-xl">
+                            <Leaf className="w-5 h-5" />
+                        </div>
+                        <span className="text-sm font-bold tracking-widest uppercase opacity-70">
                             Upload & Generate
                         </span>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-                        Upload Images
+                    <h1 className="text-5xl md:text-6xl font-black text-foreground tracking-tight animate-in fade-in slide-in-from-left-6 duration-700">
+                        Upload <span className="text-primary/90">Assets</span>
                     </h1>
-                    <p className="text-lg text-muted-foreground font-light">
-                        Upload images and generate SEO-friendly alt text in seconds
+                    <p className="text-xl text-muted-foreground font-medium max-w-2xl leading-relaxed animate-in fade-in slide-in-from-left-8 duration-1000">
+                        Transform your images with AI-powered, SEO-optimized metadata in a single drop.
                     </p>
                 </div>
 
                 {/* Plan Badge */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4 animate-in fade-in slide-in-from-right-4 duration-700">
                     {isPro ? (
-                        <div className="flex items-center gap-2 rounded-full bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 px-6 py-3 text-sm font-semibold text-white shadow-lg">
-                            <Crown className="h-4 w-4" />
-                            Pro Plan
+                        <div className="flex items-center gap-3 rounded-3xl bg-linear-to-r from-emerald-500 via-teal-500 to-green-500 px-8 py-4 text-sm font-bold text-white shadow-xl shadow-emerald-200/40 border border-white/20 hover:scale-105 transition-transform duration-500 cursor-default">
+                            <Crown className="h-5 w-5" />
+                            PRO PLAN ACTIVE
                         </div>
                     ) : (
-                        <Link
-                            href="/?scroll=pricing"
-                            className="flex items-center gap-2 rounded-full bg-gradient-to-r from-green-600 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5"
+                        <Button
+                            asChild
+                            className="rounded-3xl bg-linear-to-r from-emerald-600 to-teal-600 px-10 py-7 text-base font-bold text-white shadow-xl shadow-emerald-200/50 transition-all hover:shadow-2xl hover:-translate-y-1 hover:scale-105 active:scale-95 border-0"
                         >
-                            <TrendingUp className="h-4 w-4" />
-                            Upgrade to Pro
-                        </Link>
+                            <Link href="/?scroll=pricing">
+                                <TrendingUp className="h-5 w-5 mr-3" />
+                                Growth Plan Upgrade
+                            </Link>
+                        </Button>
                     )}
                 </div>
             </div>
 
             {/* Usage Stats Banner */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Daily Limit */}
-                <div
-                    className={`bg-white/80 backdrop-blur-sm rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] ${isAtLimit
-                            ? "border-red-200 bg-red-50/50"
-                            : isNearLimit
-                                ? "border-orange-200 bg-orange-50/50"
-                                : "border-white/60"
-                        }`}
-                >
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div
-                                className={`flex h-14 w-14 items-center justify-center rounded-[1.25rem] shadow-sm ${isAtLimit
-                                        ? "bg-gradient-to-br from-red-100 to-red-200"
-                                        : isNearLimit
-                                            ? "bg-gradient-to-br from-orange-100 to-orange-200"
-                                            : isPro
-                                                ? "bg-gradient-to-br from-yellow-400 via-orange-400 to-yellow-500"
-                                                : "bg-gradient-to-br from-blue-100 to-green-100"
-                                    }`}
-                            >
-                                {isPro ? (
-                                    <Crown className="h-6 w-6 text-white" />
-                                ) : isAtLimit ? (
-                                    <AlertCircle className="h-6 w-6 text-red-600" />
-                                ) : (
-                                    <Upload className="h-6 w-6 text-blue-600" />
-                                )}
-                            </div>
-                            <div>
-                                <p className="text-xs text-muted-foreground font-medium mb-1">
-                                    Daily Limit
-                                </p>
-                                <p className="text-xl font-bold text-foreground">
-                                    {isPro
-                                        ? "Unlimited"
-                                        : `${rateLimit.remaining}/${rateLimit.limit}`}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    {!isPro && (
-                        <div className="mt-4">
-                            <div className="h-3 w-full overflow-hidden rounded-full bg-stone-100">
-                                <div
-                                    className={`h-full rounded-full transition-all duration-500 ${isAtLimit
-                                            ? "bg-red-500"
-                                            : isNearLimit
-                                                ? "bg-gradient-to-r from-orange-400 to-orange-500"
-                                                : "bg-gradient-to-r from-green-400 to-blue-400"
-                                        }`}
-                                    style={{
-                                        width: `${(rateLimit.remaining / rateLimit.limit) * 100}%`,
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    )}
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                <StatCard
+                    icon={isPro ? Crown : isAtLimit ? AlertCircle : Upload}
+                    label="Daily Credit Space"
+                    value={isPro ? "Unlimited Access" : `${rateLimit.remaining} / ${rateLimit.limit}`}
+                    variant={limitVariant}
+                    progress={
+                        !isPro
+                            ? (rateLimit.remaining / rateLimit.limit) * 100
+                            : undefined
+                    }
+                />
 
-                {/* Upload Mode Info */}
-                <div className="bg-white/80 backdrop-blur-sm rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-purple-100 to-pink-100 shadow-sm">
-                            <Zap className="h-6 w-6 text-purple-600" />
-                        </div>
-                        <div>
-                            <p className="text-xs text-muted-foreground font-medium mb-1">
-                                Upload Mode
-                            </p>
-                            <p className="text-xl font-bold text-foreground">
-                                {isPro ? "Bulk Upload" : "Single Upload"}
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <StatCard
+                    icon={Zap}
+                    label="Active Engine"
+                    value={isPro ? "Bulk Processing" : "Single Stream"}
+                    variant="blue"
+                />
 
-                {/* Processing Speed */}
-                <div className="bg-white/80 backdrop-blur-sm rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-green-100 to-emerald-100 shadow-sm">
-                            <CheckCircle className="h-6 w-6 text-green-600" />
-                        </div>
-                        <div>
-                            <p className="text-xs text-muted-foreground font-medium mb-1">
-                                Processing
-                            </p>
-                            <p className="text-xl font-bold text-foreground">
-                                {isPro ? "Priority" : "Standard"}
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <StatCard
+                    icon={CheckCircle}
+                    label="Intelligence"
+                    value={isPro ? "Priority Neural" : "Standard Model"}
+                    variant="success"
+                />
             </div>
 
             {/* Warnings */}
             {isAtLimit && (
-                <div className="bg-red-50/80 backdrop-blur-sm rounded-[2rem] p-6 border border-red-200 shadow-sm">
-                    <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-[1rem] bg-gradient-to-br from-red-100 to-red-200 flex-shrink-0">
-                            <AlertCircle className="h-5 w-5 text-red-600" />
+                <Alert
+                    variant="destructive"
+                    className="bg-red-50/80 backdrop-blur-xl rounded-[2.5rem] border-red-200 shadow-2xl shadow-red-100/50 p-8 animate-in zoom-in duration-500"
+                >
+                    <div className="flex items-start gap-6">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-linear-to-br from-red-100 to-rose-200 shrink-0 shadow-inner">
+                            <AlertCircle className="h-8 w-8 text-red-600" />
                         </div>
-                        <div className="flex-1">
-                            <h3 className="text-base font-bold text-red-900 mb-2">
+                        <div className="flex-1 space-y-3">
+                            <AlertTitle className="text-2xl font-black text-red-950 tracking-tight">
                                 Daily Limit Reached
-                            </h3>
-                            <p className="text-sm text-red-800 leading-relaxed mb-4">
-                                You've reached your daily limit of {rateLimit.limit} images.
-                                Upgrade to Pro for unlimited uploads or wait until tomorrow.
-                            </p>
-                            <Link
-                                href="/pricing"
-                                className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-red-700 shadow-md hover:shadow-lg"
-                            >
-                                <Crown className="h-4 w-4" />
-                                Upgrade to Pro
-                            </Link>
+                            </AlertTitle>
+                            <AlertDescription className="text-base text-red-800/80 leading-relaxed font-medium">
+                                You&apos;ve utilized your daily quota of {rateLimit.limit} images.
+                                Upgrade to our Pro tier for boundless creative potential or return at dawn.
+                            </AlertDescription>
+                            <div className="pt-2">
+                                <Button
+                                    asChild
+                                    className="rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold px-8 h-12 shadow-lg shadow-red-200"
+                                >
+                                    <Link href="/pricing">
+                                        <Crown className="h-4 w-4 mr-2" />
+                                        Unlock Unlimited
+                                    </Link>
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </Alert>
             )}
 
             {isNearLimit && !isAtLimit && (
-                <div className="bg-orange-50/80 backdrop-blur-sm rounded-[2rem] p-6 border border-orange-200 shadow-sm">
-                    <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-[1rem] bg-gradient-to-br from-orange-100 to-orange-200 flex-shrink-0">
-                            <AlertCircle className="h-5 w-5 text-orange-600" />
+                <Alert
+                    variant="default"
+                    className="bg-amber-50/80 backdrop-blur-xl rounded-[2.5rem] border-amber-200 shadow-xl shadow-amber-100/50 p-8 animate-in slide-in-from-right-8 duration-700"
+                >
+                    <div className="flex items-start gap-6">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-linear-to-br from-amber-100 to-orange-200 shrink-0 shadow-inner">
+                            <AlertCircle className="h-8 w-8 text-amber-600" />
                         </div>
-                        <div className="flex-1">
-                            <h3 className="text-base font-bold text-orange-900 mb-2">
-                                Running Low on Credits
-                            </h3>
-                            <p className="text-sm text-orange-800 leading-relaxed">
-                                You have {rateLimit.remaining} uploads remaining today. Consider
-                                upgrading to Pro for unlimited uploads.
-                            </p>
+                        <div className="flex-1 space-y-2">
+                            <AlertTitle className="text-2xl font-black text-amber-950 tracking-tight">
+                                Running Low
+                            </AlertTitle>
+                            <AlertDescription className="text-base text-amber-800/80 font-medium leading-relaxed">
+                                Only {rateLimit.remaining} uploads remain in your current cycle.
+                                Secure a Pro membership now to avoid interruptions.
+                            </AlertDescription>
                         </div>
                     </div>
-                </div>
+                </Alert>
             )}
 
             {!isPro && !isAtLimit && !isNearLimit && (
-                <div className="bg-blue-50/80 backdrop-blur-sm rounded-[2rem] p-6 border border-blue-100 shadow-sm">
-                    <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-[1rem] bg-gradient-to-br from-blue-100 to-green-100 flex-shrink-0">
-                            <Sparkles className="h-5 w-5 text-blue-600" />
+                <Alert className="bg-stone-50/60 backdrop-blur-xl rounded-[2.5rem] border-stone-200 shadow-lg shadow-stone-100/50 p-8 animate-in slide-in-from-bottom-8 duration-1000">
+                    <div className="flex items-start gap-6">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-linear-to-br from-emerald-100 to-teal-100 shrink-0 shadow-inner">
+                            <Sparkles className="h-8 w-8 text-emerald-600" />
                         </div>
-                        <div className="flex-1">
-                            <h3 className="text-base font-bold text-foreground mb-2">
-                                Free Plan
-                            </h3>
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                                You're on the Free plan with {rateLimit.limit} daily uploads.
-                                Upgrade to Pro for unlimited uploads, bulk processing, and API
-                                access.
-                            </p>
+                        <div className="flex-1 space-y-3">
+                            <AlertTitle className="text-2xl font-black text-foreground/90 tracking-tight">
+                                Growth Mode
+                            </AlertTitle>
+                            <AlertDescription className="text-base text-muted-foreground font-medium leading-relaxed">
+                                You&apos;re currently on the entry tier with {rateLimit.limit} daily credits.
+                                Amplify your workflow with bulk processing and neural priority.
+                            </AlertDescription>
+                            <div className="pt-2">
+                                <Button
+                                    asChild
+                                    variant="secondary"
+                                    className="rounded-2xl bg-white hover:bg-stone-50 text-foreground font-bold px-8 h-12 shadow-md border-stone-200"
+                                >
+                                    <Link href="/pricing">
+                                        Explore Pro Features
+                                    </Link>
+                                </Button>
+                            </div>
                         </div>
-                        <Link
-                            href="/pricing"
-                            className="rounded-full bg-gradient-to-r from-green-600 to-blue-600 px-5 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg hover:-translate-y-0.5"
-                        >
-                            View Plans
-                        </Link>
                     </div>
-                </div>
+                </Alert>
             )}
         </div>
     );

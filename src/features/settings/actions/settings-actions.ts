@@ -1,13 +1,13 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClientServer } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { createHash, randomBytes } from 'crypto'
 import { isProUser } from '@/lib/subscription'
 
 export async function generateApiKey(name?: string) {
   try {
-    const supabase = await createClient()
+    const supabase = await createClientServer()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -50,7 +50,7 @@ export async function generateApiKey(name?: string) {
 
 export async function revokeApiKey(keyId: string) {
   try {
-    const supabase = await createClient()
+    const supabase = await createClientServer()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {

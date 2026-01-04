@@ -1,8 +1,9 @@
 'use client'
 
 import { useCallback, useState } from 'react'
-import { Upload, X, FileImage } from 'lucide-react'
+import { Upload, AlertCircle, FileImage } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Alert, AlertDescription } from '@/components/atoms/alert'
 
 interface UploadZoneProps {
   onFilesSelected: (files: File[]) => void
@@ -88,17 +89,16 @@ export function UploadZone({
   )
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn('w-full space-y-4', className)}>
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          'relative border-2 border-dashed rounded-lg p-12 transition-all duration-200 cursor-pointer',
-          'hover:border-primary/50 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/50',
+          'relative border-2 border-dashed rounded-[2.5rem] p-12 transition-all duration-500 cursor-pointer overflow-hidden group',
           isDragging
-            ? 'border-primary bg-primary/5 scale-[1.02]'
-            : 'border-zinc-300 dark:border-zinc-700'
+            ? 'border-primary bg-primary/5 scale-[1.02] shadow-2xl shadow-primary/10'
+            : 'border-border bg-card/50 hover:border-primary/40 hover:bg-accent/30 hover:shadow-xl hover:shadow-primary/5'
         )}
       >
         <input
@@ -106,37 +106,43 @@ export function UploadZone({
           accept={accept.join(',')}
           multiple={multiple}
           onChange={handleFileInput}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
         />
 
-        <div className="flex flex-col items-center justify-center gap-4 text-center">
+        <div className="flex flex-col items-center justify-center gap-8 text-center py-4">
           <div className={cn(
-            'p-4 rounded-full transition-colors',
-            isDragging ? 'bg-primary/10' : 'bg-zinc-100 dark:bg-zinc-800'
+            'p-7 rounded-3xl transition-all duration-500 shadow-inner',
+            isDragging
+              ? 'bg-primary/20 scale-110 rotate-3'
+              : 'bg-muted group-hover:bg-primary/10 group-hover:scale-105'
           )}>
             {isDragging ? (
-              <FileImage className="w-8 h-8 text-primary" />
+              <FileImage className="w-12 h-12 text-primary animate-in zoom-in spin-in-3 duration-500" />
             ) : (
-              <Upload className="w-8 h-8 text-zinc-500" />
+              <Upload className="w-12 h-12 text-muted-foreground transition-transform duration-500 group-hover:-translate-y-1" />
             )}
           </div>
 
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              {isDragging ? 'Drop your image here' : 'Drag & drop your image here'}
-            </p>
-            <p className="text-xs text-zinc-500">
-              or click to browse • Max {maxSize}MB • {accept.map(t => t.split('/')[1].toUpperCase()).join(', ')}
+          <div className="space-y-3">
+            <h3 className="text-xl font-bold text-foreground/90 tracking-tight">
+              {isDragging ? 'Drop to upload' : 'Click or drag image to upload'}
+            </h3>
+            <p className="text-sm text-muted-foreground max-w-[320px] mx-auto leading-relaxed font-medium">
+              Supports <span className="text-primary/70">{accept.map(t => t.split('/')[1].toUpperCase()).join(', ')}</span> up to {maxSize}MB
             </p>
           </div>
         </div>
+
+        {/* Decorative corner elements */}
+        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -translate-y-12 translate-x-12 blur-3xl pointer-events-none group-hover:bg-primary/10 transition-colors" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/5 rounded-full translate-y-16 -translate-x-16 blur-3xl pointer-events-none group-hover:bg-primary/10 transition-colors" />
       </div>
 
       {error && (
-        <div className="mt-3 flex items-center gap-2 p-3 rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/30">
-          <X className="w-4 h-4 text-red-600 dark:text-red-400" />
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-        </div>
+        <Alert variant="destructive" className="animate-in fade-in slide-in-from-top-2 duration-500 rounded-3xl border-red-200 bg-red-50/50 backdrop-blur-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription className="font-bold">{error}</AlertDescription>
+        </Alert>
       )}
     </div>
   )

@@ -107,4 +107,3 @@ export const useUploadStore = create<UploadState>((set, get) => ({
         set(initialState);
     },
 }));
-

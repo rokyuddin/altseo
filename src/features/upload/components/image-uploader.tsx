@@ -11,6 +11,13 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useUploadStore } from "../store/upload-store";
 import type { UploadedImage } from "../types";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/atoms/card";
 
 interface ImageUploaderProps {
   allowGuest?: boolean;
@@ -83,21 +90,25 @@ export function ImageUploader({ allowGuest = false }: ImageUploaderProps) {
 
       updateImage(index, { uploadProgress: 60 });
 
-      // NEW: Generate alt text automatically
-      let generatedAltText = "";
-      try {
-        const genResponse = await fetch("/api/generate-alt-text", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ storagePath: data.path, variant: "default" }),
-        });
-        const genData = await genResponse.json();
-        if (genResponse.ok) {
-          generatedAltText = genData.altText;
+      // Use pre-generated alt text if available
+      let generatedAltText = image.altText || "";
+
+      if (!generatedAltText) {
+        updateImage(index, { uploadProgress: 70 });
+        try {
+          const genResponse = await fetch("/api/generate-alt-text", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ storagePath: data.path, variant: "default" }),
+          });
+          const genData = await genResponse.json();
+          if (genResponse.ok) {
+            generatedAltText = genData.altText;
+          }
+        } catch (err) {
+          console.error("Auto-generation failed:", err);
+          // We continue even if auto-gen fails, the user can regenerate later
         }
-      } catch (err) {
-        console.error("Auto-generation failed:", err);
-        // We continue even if auto-gen fails, the user can regenerate later
       }
 
       updateImage(index, { uploadProgress: 80 });
@@ -154,12 +165,6 @@ export function ImageUploader({ allowGuest = false }: ImageUploaderProps) {
   };
 
 
-  const getImageUrl = (storagePath: string) => {
-    if (storagePath.startsWith('blob:') || storagePath.startsWith('data:')) return storagePath;
-    const { data } = supabase.storage.from("images").getPublicUrl(storagePath);
-    return data.publicUrl;
-  };
-
   const getImageDimensions = (file: File): Promise<{ width: number; height: number }> => {
     return new Promise((resolve) => {
       const img = new Image();
@@ -185,37 +190,52 @@ export function ImageUploader({ allowGuest = false }: ImageUploaderProps) {
   }
 
   return (
-    <div className="space-y-12 max-w-7xl mx-auto">
-      <div className="bg-white/40 backdrop-blur-xl rounded-[3rem] p-12 border border-white/60 shadow-[0_30px_60px_rgba(0,0,0,0.02)] space-y-10">
-        <div className="space-y-4 text-center max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold tracking-tight">Drop your assets</h2>
-          <p className="text-muted-foreground">
+    <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <Card className="bg-white/40 backdrop-blur-xl rounded-[3rem] p-6 md:p-12 border-white/60 shadow-[0_30px_60px_rgba(0,0,0,0.02)] border overflow-hidden flex flex-col gap-8 md:gap-12 animate-in fade-in zoom-in duration-1000">
+        <CardHeader className="text-center max-w-3xl mx-auto p-0 border-none shadow-none bg-transparent w-full flex flex-col items-center gap-4">
+          <CardTitle className="text-3xl md:text-5xl font-black tracking-tight text-foreground/90 leading-[1.1]">
+            Drop your assets
+          </CardTitle>
+          <CardDescription className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-xl mx-auto">
             We support PNG, JPG and WebP formats up to 10MB.
-            {isPro ? " You're on Pro, so upload as many as you like!" : " Free users can upload 1 image at a time."}
-          </p>
-        </div>
+            {isPro ? (
+              <span className="block mt-2 text-primary/80 font-bold uppercase text-xs tracking-widest">
+                Pro Member Unlimited Uploads
+              </span>
+            ) : (
+              <span className="block mt-2 font-medium">
+                Free users can upload 1 image at a time.
+              </span>
+            )}
+          </CardDescription>
+        </CardHeader>
 
-        <UploadZone onFilesSelected={handleFilesSelected} multiple={isPro} />
+        <CardContent className="p-0">
+          <UploadZone
+            onFilesSelected={handleFilesSelected}
+            multiple={isPro}
+            className="rounded-[2.5rem]"
+          />
+        </CardContent>
+      </Card>
+
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
+        <UploadList
+          images={images}
+          isUploading={isUploading}
+          onUploadAll={handleUploadAll}
+          onUploadOne={async (idx) => {
+            const result = await uploadToSupabase(images[idx], idx);
+            if (result) {
+              // Small delay to show completion before removing
+              setTimeout(() => {
+                removeImage(idx);
+              }, 1500);
+            }
+          }}
+          onRemove={removeImage}
+        />
       </div>
-
-      <UploadList
-        images={images}
-        isUploading={isUploading}
-        onUploadAll={handleUploadAll}
-        onUploadOne={async (idx) => {
-          const result = await uploadToSupabase(images[idx], idx);
-          if (result) {
-            // Small delay to show completion before removing
-            setTimeout(() => {
-              removeImage(idx);
-            }, 1500);
-          }
-        }}
-        onRemove={removeImage}
-        getImageUrl={getImageUrl}
-      />
-
-
     </div>
   );
 }

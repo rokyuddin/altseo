@@ -1,6 +1,6 @@
 "use client"
 
-import { TrendingUp, Zap } from "lucide-react"
+import { Zap } from "lucide-react"
 import {
   Label,
   PolarGrid,
@@ -38,7 +38,7 @@ const chartConfig = {
 
 export function QuotaChart() {
   return (
-    <Card className="flex flex-col bg-white/50 backdrop-blur-xl dark:bg-card/20 border-white/60 dark:border-border/30 rounded-4xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-500">
+    <Card className="border-none">
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-lg font-bold">Daily Quota</CardTitle>
         <CardDescription className="text-xs">Your AI usage today</CardDescription>
@@ -46,7 +46,7 @@ export function QuotaChart() {
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[180px]"
+          className="mx-auto aspect-square max-h-48"
         >
           <RadialBarChart
             data={chartData}

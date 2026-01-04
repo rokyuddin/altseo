@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClientServer } from '@/lib/supabase/server'
 import { checkRateLimit } from '@/lib/rate-limit'
 
 export async function GET() {
   try {
-    const supabase = await createClient()
+    const supabase = await createClientServer()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {

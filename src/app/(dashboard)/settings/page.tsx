@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
-import { getUser, getUserProfile } from "@/lib/auth/get-user";
+import { getUser, getUserProfile } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { signOut } from "@/lib/auth/actions";
-import { createClient } from "@/lib/supabase/server";
+import { createClientServer } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Crown, Key, TrendingUp, User, Shield, Zap, Leaf } from "lucide-react";
+import { signOut } from "@/features/auth/actions/auth-actions";
 
 
 
@@ -21,7 +21,7 @@ export default async function SettingsPage() {
 
   const rateLimit = await checkRateLimit(user.id);
 
-  const supabase = await createClient();
+  const supabase = await createClientServer();
   const { data: subscription } = await supabase
     .from("user_subscriptions")
     .select("*")
@@ -166,9 +166,8 @@ export default async function SettingsPage() {
                       <div
                         className="h-full rounded-full bg-linear-to-r from-green-400 to-blue-400 transition-all duration-500"
                         style={{
-                          width: `${
-                            (rateLimit.remaining / rateLimit.limit) * 100
-                          }%`,
+                          width: `${(rateLimit.remaining / rateLimit.limit) * 100
+                            }%`,
                         }}
                       />
                     </div>
@@ -193,9 +192,8 @@ export default async function SettingsPage() {
                     <p className="text-sm text-muted-foreground">
                       {apiKeysCount === 0
                         ? "No API keys created yet"
-                        : `${apiKeysCount} active ${
-                            apiKeysCount === 1 ? "key" : "keys"
-                          }`}
+                        : `${apiKeysCount} active ${apiKeysCount === 1 ? "key" : "keys"
+                        }`}
                     </p>
                   </div>
                 </div>

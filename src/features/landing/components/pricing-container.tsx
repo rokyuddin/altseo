@@ -1,4 +1,4 @@
-import { getUser } from "@/lib/auth/get-user";
+import { getUser } from "@/lib/auth";
 import { getUserPlan } from "@/lib/subscription";
 import { PricingSection } from "./pricing-section";
 

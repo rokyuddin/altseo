@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import {Logo} from "./logo";
-import { getUser } from "@/lib/auth/get-user";
+import { Logo } from "./logo";
+import { getUser } from "@/lib/auth";
 import { HomeMobileMenu } from "./home-mobile-menu";
 import { HOME_LINKS, NAV_LINKS } from "@/lib/constants";
 import { Button } from "../atoms/button";
@@ -9,7 +9,7 @@ import { UserMenu } from "../molecules/user-menu";
 
 
 
-function HeaderActions({isLoggedIn}: {isLoggedIn: boolean}) {
+function HeaderActions({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   return (
     <div className="flex items-center gap-4">
@@ -27,7 +27,7 @@ function UserActionsSkeleton() {
 }
 
 export async function HomeHeader() {
-    const user = await getUser();
+  const user = await getUser();
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 p-4 md:p-8 container-inline-size">
@@ -47,13 +47,13 @@ export async function HomeHeader() {
             ))}
           </nav>
 
-            <div className="hidden md:block">
+          <div className="hidden md:block">
             {user ? <UserMenu /> : <Link href={'/login'} >
-            <Button>
-              Start Free
-            </Button>
+              <Button>
+                Start Free
+              </Button>
             </Link>}
-            </div>
+          </div>
 
           <Suspense fallback={<UserActionsSkeleton />}>
             <HeaderActions isLoggedIn={!!user} />

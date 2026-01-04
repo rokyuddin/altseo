@@ -1,6 +1,4 @@
-'use server'
-
-import { createClient } from '@/lib/supabase/server'
+import { createClientServer } from '@/lib/supabase/server'
 import { getUserPlan } from './subscription'
 
 const FREE_PLAN_DAILY_LIMIT = 10
@@ -15,19 +13,75 @@ export interface RateLimitStatus {
 
 export async function checkRateLimit(userId: string): Promise<RateLimitStatus> {
   try {
-    const supabase = await createClient()
+    const supabase = await createClientServer()
     const plan = await getUserPlan(userId)
-    
+
     const limit = plan === 'pro' ? PRO_PLAN_DAILY_LIMIT : FREE_PLAN_DAILY_LIMIT
+    const today = new Date().toISOString().split('T')[0]
 
-    // Get or create rate limit record for today
-    const { data: rateLimit, error } = await supabase.rpc('get_or_create_rate_limit', {
-      p_user_id: userId
-    })
+    // Helper function to perform DB operation with retry potential
+    const performCheck = async () => {
+      // Get existing record for today
+      const { data: existingRecord, error: fetchError } = await supabase
+        .from('rate_limits')
+        .select('image_count')
+        .eq('user_id', userId)
+        .eq('date', today)
+        .single()
 
-    if (error) {
-      console.error('Error checking rate limit:', error)
-      // On error, allow the request but log it
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        throw fetchError
+      }
+
+      let innerCount = 0
+
+      if (existingRecord) {
+        innerCount = existingRecord.image_count
+      } else {
+        // Try to insert
+        const { error: insertError } = await supabase
+          .from('rate_limits')
+          .insert({ user_id: userId, date: today, image_count: 0 })
+
+        if (insertError) {
+          if (insertError.code === '23505') { // Unique violation means race condition, retry fetch
+            const { data: retryData } = await supabase
+              .from('rate_limits')
+              .select('image_count')
+              .eq('user_id', userId)
+              .eq('date', today)
+              .single()
+
+            if (retryData) innerCount = retryData.image_count
+          } else {
+            throw insertError
+          }
+        }
+      }
+      return innerCount
+    }
+
+    let count = 0
+    let lastError: any = null
+
+    // Simple retry loop (try twice)
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        count = await performCheck()
+        lastError = null
+        break
+      } catch (err) {
+        lastError = err
+        if (attempt === 1) {
+          // Wait briefly before retry
+          await new Promise(resolve => setTimeout(resolve, 500))
+        }
+      }
+    }
+
+    if (lastError) {
+      console.warn('Rate limit check failed after retries (network/db issue):', lastError.message || lastError)
+      // Fallback is to allow proceed (fail open)
       return {
         count: 0,
         limit,
@@ -36,7 +90,6 @@ export async function checkRateLimit(userId: string): Promise<RateLimitStatus> {
       }
     }
 
-    const count = rateLimit?.image_count || 0
     const remaining = limit === Infinity ? Infinity : Math.max(0, limit - count)
     const canProceed = limit === Infinity || count < limit
 
@@ -47,7 +100,7 @@ export async function checkRateLimit(userId: string): Promise<RateLimitStatus> {
       canProceed
     }
   } catch (error) {
-    console.error('Error checking rate limit:', error)
+    console.warn('Rate limit check failed (unexpected):', error)
     return {
       count: 0,
       limit: FREE_PLAN_DAILY_LIMIT,
@@ -59,8 +112,8 @@ export async function checkRateLimit(userId: string): Promise<RateLimitStatus> {
 
 export async function incrementRateLimit(userId: string): Promise<number> {
   try {
-    const supabase = await createClient()
-    
+    const supabase = await createClientServer()
+
     const { data, error } = await supabase.rpc('increment_rate_limit', {
       p_user_id: userId
     })

@@ -2,7 +2,20 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/atoms/button'
-import { Loader2, Sparkles, Copy, Check, Edit2, Save, Download, RefreshCw, X, ChevronDown, Wand2 } from 'lucide-react'
+import {
+  Loader2,
+  Sparkles,
+  Copy,
+  Check,
+  Edit2,
+  Save,
+  Download,
+  RefreshCw,
+  Upload,
+  MoreHorizontal,
+  FileText,
+  FileJson
+} from 'lucide-react'
 import { Textarea } from '@/components/atoms/textarea'
 import { updateAltText } from '@/features/upload/actions/upload-actions'
 import { downloadAsTxt, downloadAsJson } from '@/lib/download'
@@ -11,6 +24,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from '@/components/atoms/dropdown-menu'
 import {
   Select,
@@ -31,6 +48,7 @@ interface AltSEOGeneratorProps {
   onGenerated?: (altText: string) => void
   allowDownload?: boolean
   isAuthenticated?: boolean
+  onUpload?: () => void
 }
 
 export function AltSEOGenerator({
@@ -41,6 +59,7 @@ export function AltSEOGenerator({
   onGenerated,
   allowDownload = true,
   isAuthenticated = true,
+  onUpload,
 }: AltSEOGeneratorProps) {
   const [altText, setAltText] = useState(initialAltText || '')
   const [variant, setVariant] = useState<Variant>('default')
@@ -203,35 +222,25 @@ export function AltSEOGenerator({
             placeholder="Edit text..."
           />
         ) : (
-          <div className="relative min-h-[100px] flex flex-col z-0">
-            <p className="text-sm font-medium leading-relaxed text-zinc-700 dark:text-zinc-300 px-1 italic">
+          <div className="relative min-h-[100px] flex flex-col z-0 px-1">
+            <p className="text-sm font-medium leading-relaxed text-zinc-700 dark:text-zinc-300 italic">
               "{altText}"
             </p>
-            {!isEditing && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsEditing(true)}
-                className="z-10 absolute -top-2 -right-2 h-8 w-8 rounded-full backdrop-blur-md group-hover:opacity-100 transition-opacity"
-              >
-                <Edit2 className="size-4" />
-              </Button>
-            )}
           </div>
         )}
       </div>
 
       {/* Action Bar */}
-      <div className={cn("flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800/50 p-1 rounded-full border border-zinc-100 dark:border-zinc-800 shadow-sm", {
+      <div className={cn("flex items-center justify-between gap-2 bg-zinc-50 dark:bg-zinc-800/50 p-1.5 rounded-full border border-zinc-100 dark:border-zinc-800 shadow-sm", {
         "mt-4": isEditing
       })}>
         {isEditing ? (
-          <>
+          <div className="flex items-center gap-2 w-full">
             <Button
               size="sm"
               onClick={() => setIsEditing(false)}
               variant="ghost"
-              className="flex-1 rounded-full text-xs font-bold"
+              className="flex-1 rounded-full text-xs font-bold h-9"
             >
               Cancel
             </Button>
@@ -239,7 +248,7 @@ export function AltSEOGenerator({
               size="sm"
               onClick={handleSave}
               disabled={isSaving}
-              className="flex-2 rounded-full text-xs font-bold bg-zinc-900 text-white hover:bg-zinc-800"
+              className="flex-2 rounded-full text-xs font-bold bg-zinc-900 text-white hover:bg-zinc-800 h-9"
             >
               {isSaving ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -248,66 +257,86 @@ export function AltSEOGenerator({
               )}
               Save Changes
             </Button>
-          </>
+          </div>
         ) : (
-          <>
-            {/* Main Actions */}
-            <div className="flex flex-1 items-center gap-1">
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={copyToClipboard}
-                className="flex-1 rounded-full text-[11px] font-bold"
-              >
-                {copied ? (
-                  <Check className="h-3.5 w-3.5 text-green-500" />
-                ) : (
-                  <Copy className="h-3.5 w-3.5 mr-1.5" />
-                )}
-                {copied ? "Copied" : "Copy"}
-              </Button>
-
-              {allowDownload && isAuthenticated && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="rounded-full h-9 px-3"
-                    >
-                      <Download className="h-3.5 w-3.5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="rounded-2xl p-1 w-44 shadow-2xl border-zinc-100">
-                    <DropdownMenuItem onClick={handleDownloadTxt} className="rounded-xl h-10 font-medium">
-                      <Download className="mr-2.5 h-4 w-4 text-primary" />
-                      Download TXT
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleDownloadJson} className="rounded-xl h-10 font-medium">
-                      <Download className="mr-2.5 h-4 w-4 text-primary" />
-                      Download JSON
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+          <div className="flex items-center justify-between w-full px-1">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Magic Alt SEO</span>
             </div>
 
-            {/* Regenerate Action */}
-            <Button
-              onClick={generateAltText}
-              disabled={isGenerating}
-              size="sm"
-              variant="default"
-              className="flex-1 rounded-full text-[11px] font-bold bg-zinc-900 text-white hover:bg-zinc-800 transition-all active:scale-95"
-            >
-              {isGenerating ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <RefreshCw className="size-4" />
-              )}
-              Regenerate
-            </Button>
-          </>
+            {/* Menu Button */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="rounded-full h-9 w-9 p-0 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <MoreHorizontal className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="rounded-2xl p-1.5 w-56 shadow-2xl border-white/40 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90">
+                {onUpload && (
+                  <>
+                    <DropdownMenuItem onClick={onUpload} className="rounded-xl h-11 font-bold text-primary focus:bg-primary/10 cursor-pointer">
+                      <Upload className="mr-3 h-4 w-4" />
+                      Upload to Supabase
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-zinc-100 dark:bg-zinc-800" />
+                  </>
+                )}
+
+                <DropdownMenuItem onClick={copyToClipboard} className="rounded-xl h-11 font-medium cursor-pointer">
+                  {copied ? (
+                    <Check className="mr-3 h-4 w-4 text-green-500" />
+                  ) : (
+                    <Copy className="mr-3 h-4 w-4 text-zinc-500" />
+                  )}
+                  {copied ? "Copied!" : "Copy Alt Text"}
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={() => setIsEditing(true)} className="rounded-xl h-11 font-medium cursor-pointer">
+                  <Edit2 className="mr-3 h-4 w-4 text-zinc-500" />
+                  Edit Text
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={generateAltText} disabled={isGenerating} className="rounded-xl h-11 font-medium cursor-pointer">
+                  {isGenerating ? (
+                    <Loader2 className="mr-3 h-4 w-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="mr-3 h-4 w-4 text-zinc-500" />
+                  )}
+                  Regenerate
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator className="bg-zinc-100 dark:bg-zinc-800" />
+
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="rounded-xl h-11 font-medium cursor-pointer">
+                    <Download className="mr-3 h-4 w-4 text-zinc-500" />
+                    Download
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent
+                    sideOffset={14}
+                    alignOffset={-5}
+                    className="rounded-xl p-1.5 shadow-xl border-white/40 dark:border-zinc-800 backdrop-blur-xl bg-white/95 dark:bg-zinc-900/95"
+                  >
+                    <DropdownMenuItem onClick={handleDownloadTxt} className="rounded-xl h-10 font-medium cursor-pointer">
+                      <FileText className="mr-2.5 h-4 w-4" />
+                      As Text (.txt)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleDownloadJson} className="rounded-xl h-10 font-medium cursor-pointer">
+                      <FileJson className="mr-2.5 h-4 w-4" />
+                      As JSON (.json)
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         )}
       </div>
 

@@ -50,8 +50,8 @@ export function HistoryResults({ initialResults }: HistoryResultsProps) {
             size="sm"
             onClick={() => setViewMode('grid')}
             className={cn(
-               "rounded-full h-10 px-6 font-bold transition-all duration-300",
-               viewMode === 'grid' ? "bg-zinc-900 text-white shadow-lg" : "text-zinc-500 hover:text-zinc-900"
+              "rounded-full h-10 px-6 font-bold transition-all duration-300",
+              viewMode === 'grid' ? "bg-zinc-900 text-white shadow-lg" : "text-zinc-500 hover:text-zinc-900"
             )}
           >
             <LayoutGrid className="size-4 mr-2" />
@@ -62,8 +62,8 @@ export function HistoryResults({ initialResults }: HistoryResultsProps) {
             size="sm"
             onClick={() => setViewMode('list')}
             className={cn(
-               "rounded-full h-10 px-6 font-bold transition-all duration-300",
-               viewMode === 'list' ? "bg-zinc-900 text-white shadow-lg" : "text-zinc-500 hover:text-zinc-900"
+              "rounded-full h-10 px-6 font-bold transition-all duration-300",
+              viewMode === 'list' ? "bg-zinc-900 text-white shadow-lg" : "text-zinc-500 hover:text-zinc-900"
             )}
           >
             <List className="size-4 mr-2" />

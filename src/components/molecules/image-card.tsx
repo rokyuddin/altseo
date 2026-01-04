@@ -44,6 +44,9 @@ interface ImageCardProps {
   fileSize?: number | null
   mimeType?: string | null
   viewMode?: 'grid' | 'list'
+  className?: string
+  onGenerated?: (altText: string) => void
+  onUpload?: () => void
 }
 
 export function ImageCard({
@@ -60,6 +63,9 @@ export function ImageCard({
   fileSize,
   mimeType,
   viewMode = 'grid',
+  className,
+  onGenerated,
+  onUpload,
 }: ImageCardProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(true)
   const [showPreview, setShowPreview] = useState(false)
@@ -77,7 +83,8 @@ export function ImageCard({
   return (
     <Card className={cn(
       "container-card pt-0 gap-0 group overflow-hidden bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-white/40 dark:border-zinc-800/40 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] transition-all duration-500",
-      viewMode === 'list' ? "max-h-[300px]" : ""
+      viewMode === 'list' ? "max-h-[300px]" : "",
+      className
     )}>
       <div className={cn(
         "flex flex-col h-full",
@@ -118,7 +125,7 @@ export function ImageCard({
                   <Maximize2 className="h-4 w-4 text-white" />
                 </Button>
               </DialogTrigger>
-              <DialogContent 
+              <DialogContent
                 showCloseButton={false}
                 className="md:max-w-4xl w-[95vw] h-[90vh] p-0 overflow-hidden bg-transparent border-none shadow-none flex items-center justify-center"
               >
@@ -143,7 +150,7 @@ export function ImageCard({
                   >
                     <X className="h-6 w-6" />
                   </Button>
-                  
+
                   <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black/40 backdrop-blur-xl px-6 py-3 rounded-full border border-white/10">
                     <p className="text-white font-bold text-sm truncate max-w-[200px] md:max-w-md">{fileName}</p>
                   </div>
@@ -172,7 +179,7 @@ export function ImageCard({
                   </AlertDialogHeader>
                   <AlertDialogFooter className="gap-3">
                     <AlertDialogCancel className="rounded-full px-8 py-6 font-bold text-base border-zinc-200">Keep it</AlertDialogCancel>
-                    <AlertDialogAction 
+                    <AlertDialogAction
                       onClick={(e) => {
                         e.stopPropagation();
                         onDelete();
@@ -185,7 +192,7 @@ export function ImageCard({
                 </AlertDialogContent>
               </AlertDialog>
             )}
-            
+
             {onRemove && (
               <Button
                 size="sm"
@@ -249,6 +256,8 @@ export function ImageCard({
               initialAltText={altText}
               allowDownload={true}
               isAuthenticated={isAuthenticated}
+              onGenerated={onGenerated}
+              onUpload={onUpload}
             />
           </div>
         </CardContent>

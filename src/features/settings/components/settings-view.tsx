@@ -215,11 +215,10 @@ export function SettingsView() {
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
                   <div
-                    className={`text-2xl font-serif font-bold capitalize ${
-                      isPro
+                    className={`text-2xl font-serif font-bold capitalize ${isPro
                         ? "text-amber-700 dark:text-amber-300"
                         : "text-green-700 dark:text-green-300"
-                    }`}
+                      }`}
                   >
                     {subscription?.plan_type || "Free"} Garden
                   </div>
