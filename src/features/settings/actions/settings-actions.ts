@@ -1,7 +1,7 @@
 'use server'
 
 import { createClientServer } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { createHash, randomBytes } from 'crypto'
 import { isProUser } from '@/lib/subscription'
 
@@ -40,7 +40,8 @@ export async function generateApiKey(name?: string) {
       return { error: 'Failed to create API key' }
     }
 
-    revalidatePath('/dashboard/settings')
+    revalidateTag('api-keys', 'max')
+    revalidatePath('/api-keys', 'page')
     return { key: apiKey, data }
   } catch (error) {
     console.error('Generate API key error:', error)
@@ -69,7 +70,8 @@ export async function revokeApiKey(keyId: string) {
       return { error: 'Failed to revoke API key' }
     }
 
-    revalidatePath('/dashboard/settings')
+    revalidateTag('api-keys', 'max')
+    revalidatePath('/api-keys', 'page')
     return { success: true }
   } catch (error) {
     console.error('Revoke API key error:', error)
