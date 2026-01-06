@@ -42,9 +42,8 @@ export const getUserPlan = async (userId: string): Promise<PlanType> => {
 }
 
 export const getUserSubscription = async (userId: string): Promise<UserSubscription | null> => {
+  const supabase = await createClientServer()
   try {
-    const supabase = await createClientServer()
-
     const { data, error } = await supabase
       .from('user_subscriptions')
       .select('*')

@@ -3,8 +3,8 @@ import { createClientServer } from '@/lib/supabase/server'
 import { checkRateLimit } from '@/lib/rate-limit'
 
 export async function GET() {
+  const supabase = await createClientServer()
   try {
-    const supabase = await createClientServer()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {

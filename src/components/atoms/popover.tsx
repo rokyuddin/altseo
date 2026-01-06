@@ -42,11 +42,10 @@ function Popover({ children, open, onOpenChange }: PopoverProps) {
     <div ref={containerRef} className="relative">
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
-          ? React.cloneElement(child, {
-              ...child.props,
-              isOpen,
-              onOpenChange: handleOpenChange,
-            })
+          ? React.cloneElement(child as React.ReactElement<any>, {
+            isOpen,
+            onOpenChange: handleOpenChange,
+          })
           : child
       )}
     </div>
@@ -66,7 +65,7 @@ function PopoverTrigger({ children, asChild, isOpen, onOpenChange }: PopoverTrig
   }
 
   if (asChild) {
-    return React.cloneElement(children as React.ReactElement, {
+    return React.cloneElement(children as React.ReactElement<any>, {
       onClick: handleClick,
     })
   }
@@ -104,7 +103,7 @@ function PopoverContent({
   return (
     <div
       className={cn(
-        "absolute top-full mt-2 z-50 bg-popover text-popover-foreground rounded-md border shadow-md outline-none animate-in fade-in-0 zoom-in-95",
+        "top-full z-50 absolute bg-popover shadow-md mt-2 border rounded-md outline-none text-popover-foreground animate-in fade-in-0 zoom-in-95",
         alignClass,
         className
       )}
