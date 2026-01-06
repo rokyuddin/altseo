@@ -1,7 +1,7 @@
-'use server'
-
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClientServer } from '@/lib/supabase/server'
 import { getUser } from './auth'
+import { cacheTag } from "next/cache";
 
 export type PlanType = 'free' | 'pro'
 
@@ -14,9 +14,11 @@ export interface UserSubscription {
   updated_at: string
 }
 
-export async function getUserPlan(userId: string): Promise<PlanType> {
+async function getCachedUserPlan(userId: string): Promise<PlanType> {
+  "use cache"
+  cacheTag("user-plan")
   try {
-    const supabase = await createClientServer()
+    const supabase = createAdminClient();
 
     const { data, error } = await supabase
       .from('user_subscriptions')
@@ -25,18 +27,21 @@ export async function getUserPlan(userId: string): Promise<PlanType> {
       .single()
 
     if (error || !data) {
-      // Default to free if no subscription found
       return 'free'
     }
 
     return data.plan_type as PlanType
   } catch (error) {
-    console.error('Error getting user plan:', error)
+    console.error('Error getting cached user plan:', error)
     return 'free'
   }
 }
 
-export async function getUserSubscription(userId: string): Promise<UserSubscription | null> {
+export const getUserPlan = async (userId: string): Promise<PlanType> => {
+  return getCachedUserPlan(userId);
+}
+
+export const getUserSubscription = async (userId: string): Promise<UserSubscription | null> => {
   try {
     const supabase = await createClientServer()
 

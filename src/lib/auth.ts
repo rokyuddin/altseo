@@ -1,7 +1,9 @@
 import { createClientServer } from '@/lib/supabase/server'
 import { getUserPlan } from '@/lib/subscription'
 
-export async function getUser() {
+import { cache } from 'react'
+
+export const getUser = cache(async () => {
     try {
         const supabase = await createClientServer()
         const { data: { user }, error } = await supabase.auth.getUser()
@@ -15,7 +17,7 @@ export async function getUser() {
         console.error('Error getting user:', error)
         return null
     }
-}
+})
 
 export async function getUserProfile() {
     try {

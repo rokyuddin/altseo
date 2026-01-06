@@ -1,30 +1,37 @@
 import { getUser } from "@/lib/auth";
-import { createClientServer } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { Result } from "../types";
+import { cacheLife } from "next/cache";
 
 
 
 
-async function getRecentResults(): Promise<Result[]> {
-    const supabase = await createClientServer();
-
-    const user = await getUser()
-
-    if (!user) return [];
+async function getCachedRecentResults(userId: string): Promise<Result[]> {
+    "use cache"
+    cacheLife('weeks')
+    const supabase = createAdminClient();
 
     const { data: results, error } = await supabase
         .from("images")
         .select("id, file_name, created_at, alt_text, storage_path")
-        .eq("user_id", user.id)
+        .eq("user_id", userId)
         .order("created_at", { ascending: false })
-        .limit(6);
+        .limit(5);
 
     if (error) {
         console.error("Error fetching results:", error);
         return [];
     }
 
-    return results;
+    return results as Result[];
+}
+
+async function getRecentResults(): Promise<Result[]> {
+    const user = await getUser()
+
+    if (!user) return [];
+
+    return getCachedRecentResults(user.id);
 }
 
 export { getRecentResults };

@@ -47,19 +47,19 @@ export function UserMenu({ userEmail, className }: UserMenuProps) {
           variant="ghost"
           size="icon"
           className={cn(
-            "rounded-full bg-white/60 hover:bg-white/80 border border-white/40 backdrop-blur-sm",
+            "bg-white/60 hover:bg-white/80 backdrop-blur-sm border border-white/40 rounded-full",
             className,
           )}
         >
-          <UserIcon className="h-5 w-5" />
+          <UserIcon className="w-5 h-5" />
           <span className="sr-only">User menu</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-56 p-0">
+      <PopoverContent align="end" className="p-0 w-56">
         <div className="p-4">
           {userEmail && (
             <>
-              <div className="px-2 py-1.5 text-sm text-muted-foreground">
+              <div className="px-2 py-1.5 text-muted-foreground text-sm">
                 {userEmail}
               </div>
               <hr className="my-2 border-border" />
@@ -69,49 +69,49 @@ export function UserMenu({ userEmail, className }: UserMenuProps) {
             <Link
               href="/dashboard"
               onClick={handleLinkClick}
-              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+              className="flex items-center gap-2 hover:bg-accent px-2 py-2 rounded-sm text-sm transition-colors hover:text-accent-foreground"
             >
-              <LayoutDashboard className="h-4 w-4" />
+              <LayoutDashboard className="w-4 h-4" />
               Dashboard
             </Link>
             <Link
-              href="/upload"
+              href="/assets/upload"
               onClick={handleLinkClick}
-              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+              className="flex items-center gap-2 hover:bg-accent px-2 py-2 rounded-sm text-sm transition-colors hover:text-accent-foreground"
             >
-              <Upload className="h-4 w-4" />
+              <Upload className="w-4 h-4" />
               Upload
             </Link>
             <Link
-              href="/history"
+              href="/assets/history"
               onClick={handleLinkClick}
-              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+              className="flex items-center gap-2 hover:bg-accent px-2 py-2 rounded-sm text-sm transition-colors hover:text-accent-foreground"
             >
-              <History className="h-4 w-4" />
+              <History className="w-4 h-4" />
               History
             </Link>
             <Link
               href="/settings"
               onClick={handleLinkClick}
-              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+              className="flex items-center gap-2 hover:bg-accent px-2 py-2 rounded-sm text-sm transition-colors hover:text-accent-foreground"
             >
-              <Settings className="h-4 w-4" />
+              <Settings className="w-4 h-4" />
               Settings
             </Link>
             <Link
               href="/api-keys"
               onClick={handleLinkClick}
-              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+              className="flex items-center gap-2 hover:bg-accent px-2 py-2 rounded-sm text-sm transition-colors hover:text-accent-foreground"
             >
-              <Key className="h-4 w-4" />
+              <Key className="w-4 h-4" />
               API Keys
             </Link>
             <hr className="my-2 border-border" />
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-2 px-2 py-2 text-sm rounded-sm hover:bg-destructive/10 text-destructive hover:text-destructive transition-colors w-full text-left"
+              className="flex items-center gap-2 hover:bg-destructive/10 px-2 py-2 rounded-sm w-full text-destructive hover:text-destructive text-sm text-left transition-colors"
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut className="w-4 h-4" />
               Sign Out
             </button>
           </nav>

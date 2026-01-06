@@ -1,3 +1,4 @@
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClientServer } from "@/lib/supabase/server";
 import { getUser, getUserProfile } from "@/lib/auth";
 
@@ -13,43 +14,53 @@ export type UsageData = {
   generations: number;
 };
 
+async function getCachedDashboardContent(userId: string) {
+  "use cache"
+  const supabase = createAdminClient();
+
+  // Fetch recent results and count with admin client to bypass RLS (safe with userId filter)
+  const { data: recentResults, count, error } = await supabase
+    .from("images")
+    .select("*", { count: "exact" })
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error("Error fetching dashboard content:", error);
+    return { recentResults: [], count: 0 };
+  }
+
+  return { recentResults: recentResults || [], count: count || 0 };
+}
+
 export async function getDashboardData() {
   const user = await getUser();
-  const supabase = await createClientServer();
 
   if (!user) {
     return null;
   }
 
   // Fetch profile and stats in parallel
-  const [profile, recentResultsResponse] = await Promise.all([
+  // getUserProfile uses cookies, so it stays here. 
+  // We offset the DB query to the cached function.
+  const [profile, content] = await Promise.all([
     getUserProfile(),
-    supabase
-      .from("images")
-      .select("*", { count: "exact" })
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(5),
+    getCachedDashboardContent(user.id),
   ]);
-
-  const { data: recentResults, count } = recentResultsResponse;
 
   return {
     user,
     profile,
-    recentResults: recentResults || [],
-    totalCount: count || 0,
+    recentResults: content.recentResults,
+    totalCount: content.count,
     isPro: profile?.plan === "pro",
   };
 }
 
-export async function getUsageData(range: "weekly" | "monthly" | "yearly" = "weekly"): Promise<UsageData[]> {
-  const user = await getUser();
-  const supabase = await createClientServer();
-
-  if (!user) {
-    return [];
-  }
+async function getCachedUsageData(userId: string, range: "weekly" | "monthly" | "yearly"): Promise<UsageData[]> {
+  "use cache"
+  const supabase = createAdminClient();
 
   let startDate = new Date();
   if (range === "weekly") {
@@ -63,7 +74,7 @@ export async function getUsageData(range: "weekly" | "monthly" | "yearly" = "wee
   const { data, error } = await supabase
     .from("images")
     .select("created_at")
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .gte("created_at", startDate.toISOString())
     .order("created_at", { ascending: true });
 
@@ -93,4 +104,14 @@ export async function getUsageData(range: "weekly" | "monthly" | "yearly" = "wee
     date,
     generations,
   }));
+}
+
+export async function getUsageData(range: "weekly" | "monthly" | "yearly" = "weekly"): Promise<UsageData[]> {
+  const user = await getUser();
+
+  if (!user) {
+    return [];
+  }
+
+  return getCachedUsageData(user.id, range);
 }

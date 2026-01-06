@@ -33,7 +33,7 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Protected routes that require authentication
-  const protectedRoutes = ['/dashboard', '/upload', '/settings', '/api-keys']
+  const protectedRoutes = ['/dashboard', '/assets', '/settings', '/api-keys']
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
 
   // Auth routes that should redirect to dashboard if already logged in

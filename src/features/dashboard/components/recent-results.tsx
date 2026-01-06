@@ -23,11 +23,11 @@ export function RecentResults() {
   const results = use(getRecentResults())
 
   return (
-    <Card className="h-[calc(100svh-44rem)] flex flex-col gap-0 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <Card className="slide-in-from-bottom-4 flex flex-col gap-0 h-[calc(100svh-44rem)] overflow-hidden animate-in duration-700 fade-in">
       <CardHeader className="pb-6">
         <CardTitle>
           <div className="flex items-center gap-2">
-            <div className="flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-primary border border-primary/10">
+            <div className="flex justify-center items-center bg-primary/10 border border-primary/10 rounded-2xl size-10 text-primary">
               <Clock className="size-5" />
             </div>
             Recent activity
@@ -35,7 +35,7 @@ export function RecentResults() {
         </CardTitle>
         <CardAction>
           <Link
-            href="/upload"
+            href="/assets/upload"
           >
             <Button>
               <UploadIcon className="size-5" />
@@ -49,23 +49,23 @@ export function RecentResults() {
 
       <CardContent className="flex-1 overflow-y-auto">
         {results && results.length > 0 ? (
-          <Table>
-            <TableHeader className="sticky top-0 bg-card z-10">
+          <Table containerClassName="overflow-visible">
+            <TableHeader className="top-0 z-10 sticky bg-card/95 supports-backdrop-filter:bg-card/75 backdrop-blur">
               <TableRow className="hover:bg-transparent border-border">
-                <TableHead className="text-xs font-black uppercase tracking-widest">Image</TableHead>
-                <TableHead className="text-xs font-black uppercase tracking-widest">File Name</TableHead>
-                <TableHead className="text-xs font-black uppercase tracking-widest">Alt Text</TableHead>
-                <TableHead className="text-xs font-black uppercase tracking-widest text-right">Date</TableHead>
+                <TableHead className="font-black text-xs uppercase tracking-widest">Image</TableHead>
+                <TableHead className="font-black text-xs uppercase tracking-widest">File Name</TableHead>
+                <TableHead className="font-black text-xs uppercase tracking-widest">Alt Text</TableHead>
+                <TableHead className="font-black text-xs text-right uppercase tracking-widest">Date</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {results.map((result) => (
                 <TableRow
                   key={result.id}
-                  className="group/row hover:bg-muted/50 transition-colors border-border"
+                  className="group/row hover:bg-muted/50 border-border transition-colors"
                 >
                   <TableCell>
-                    <div className="relative h-14 w-14 rounded-lg overflow-hidden shadow-sm ring-1 ring-border group-hover/row:scale-105 transition-transform duration-500">
+                    <div className="relative shadow-sm ring-border rounded-lg ring-1 w-14 h-14 overflow-hidden group-hover/row:scale-105 transition-transform duration-500">
                       <Image
                         src={getImageUrl(result.storage_path)}
                         alt={result.file_name}
@@ -76,10 +76,10 @@ export function RecentResults() {
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-sm font-bold text-foreground group-hover/row:text-primary transition-colors truncate max-w-[180px]">
+                      <span className="max-w-[180px] font-bold text-foreground group-hover/row:text-primary text-sm truncate transition-colors">
                         {result.file_name}
                       </span>
-                      <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">
+                      <span className="font-medium text-[10px] text-muted-foreground uppercase tracking-tighter">
                         {result.storage_path.split('.').pop()} file
                       </span>
                     </div>
@@ -87,18 +87,18 @@ export function RecentResults() {
                   <TableCell>
                     {result.alt_text ? (
                       <div className="flex flex-col gap-2">
-                        <p className="text-xs text-muted-foreground line-clamp-2 italic font-medium leading-relaxed max-w-sm whitespace-normal">
+                        <p className="max-w-sm font-medium text-muted-foreground text-xs italic line-clamp-2 leading-relaxed whitespace-normal">
                           "{result.alt_text}"
                         </p>
-                        <div className="flex items-center gap-1.5 self-start">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-[9px] font-bold text-primary border border-primary/10">
+                        <div className="flex items-center self-start gap-1.5">
+                          <span className="inline-flex items-center gap-1 bg-primary/10 px-2 py-0.5 border border-primary/10 rounded-full font-bold text-[9px] text-primary">
                             <Sparkles className="w-2.5 h-2.5" />
                             Generated
                           </span>
                         </div>
                       </div>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground border border-border">
+                      <span className="inline-flex items-center gap-1.5 bg-secondary px-3 py-1 border border-border rounded-full font-bold text-[10px] text-secondary-foreground">
                         <Clock className="w-3 h-3 animate-pulse" />
                         Processing...
                       </span>
@@ -106,10 +106,10 @@ export function RecentResults() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex flex-col items-end gap-1">
-                      <span className="text-sm font-black text-foreground tabular-nums">
+                      <span className="font-black tabular-nums text-foreground text-sm">
                         {format(new Date(result.created_at), "MMM d")}
                       </span>
-                      <span className="text-[10px] text-muted-foreground font-medium">
+                      <span className="font-medium text-[10px] text-muted-foreground">
                         {format(new Date(result.created_at), "h:mm a")}
                       </span>
                     </div>
@@ -119,19 +119,19 @@ export function RecentResults() {
             </TableBody>
           </Table>
         ) : (
-          <div className="p-20 text-center flex flex-col items-center justify-center space-y-6">
-            <div className="h-20 w-20 rounded-3xl bg-muted flex items-center justify-center">
-              <ImageIcon className="h-10 w-10 text-muted-foreground" />
+          <div className="flex flex-col justify-center items-center space-y-6 p-20 text-center">
+            <div className="flex justify-center items-center bg-muted rounded-3xl w-20 h-20">
+              <ImageIcon className="w-10 h-10 text-muted-foreground" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-foreground">No recent activity</h3>
-              <p className="text-sm text-muted-foreground font-light max-w-[240px] mx-auto mt-2">
+              <h3 className="font-bold text-foreground text-xl">No recent activity</h3>
+              <p className="mx-auto mt-2 max-w-[240px] font-light text-muted-foreground text-sm">
                 Optimization results will appear here once you upload your first image.
               </p>
             </div>
             <Link
-              href="/upload"
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-all shadow-md hover:-translate-y-1"
+              href="/assets/upload"
+              className="inline-flex items-center gap-2 bg-primary shadow-md px-6 py-3 rounded-xl font-bold text-primary-foreground text-sm transition-all hover:-translate-y-1"
             >
               Start Uploading
             </Link>
@@ -140,8 +140,8 @@ export function RecentResults() {
       </CardContent>
 
       <Separator />
-      <CardFooter className="py-4 flex items-center justify-center">
-        <Link href="/upload?tab=history" className="text-xs tracking-widest font-black uppercase text-primary hover:text-primary/80 transition-colors">
+      <CardFooter className="flex justify-center items-center py-4">
+        <Link href="/assets/history" className="font-black text-primary hover:text-primary/80 text-xs uppercase tracking-widest transition-colors">
           View all activity
         </Link>
       </CardFooter>

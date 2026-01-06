@@ -8,15 +8,15 @@ export default function DashboardPage() {
     <div className="container-inline-size space-y-8">
       {/* Header Section */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2.5 text-primary group">
-          <div className="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-all duration-500 shadow-inner">
+        <div className="group flex items-center gap-2.5 text-primary">
+          <div className="bg-primary/10 group-hover:bg-primary/20 shadow-inner p-2 rounded-xl transition-all duration-500">
             <Sparkles className="w-4 h-4" />
           </div>
-          <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary/80">
+          <span className="font-bold text-primary/80 text-xs uppercase tracking-[0.2em]">
             Overview & Analytics
           </span>
         </div>
-        <h1 className="text-4xl md:text-7xl font-black text-foreground tracking-tightest">
+        <h1 className="font-black text-foreground text-4xl md:text-7xl tracking-tightest">
           Dashboard<span className="text-primary text-8xl leading-0">.</span>
         </h1>
       </div>
@@ -25,13 +25,13 @@ export default function DashboardPage() {
       </Suspense>
 
       {/* Main Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+      <div className="gap-8 grid grid-cols-1 md:grid-cols-12">
         <div className="col-span-12 md:col-span-8">
           <Suspense fallback={<RecentResultsLoader />}>
             <RecentResults />
           </Suspense>
         </div>
-        <div className="col-span-12 md:col-span-4 space-y-6">
+        <div className="space-y-6 col-span-12 md:col-span-4">
           <QuotaChart />
           <QuickActions />
         </div>

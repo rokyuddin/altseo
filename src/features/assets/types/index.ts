@@ -50,3 +50,13 @@ export interface ImageWithAltText {
   generating?: boolean
   error?: string
 }
+
+
+
+export interface AssetsHistory {
+  id: string;
+  file_name: string;
+  created_at: string;
+  alt_text: string | null;
+  storage_path: string;
+}

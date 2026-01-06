@@ -15,7 +15,7 @@ import {
   MoreHorizontal,
 } from 'lucide-react'
 import { Textarea } from '@/components/atoms/textarea'
-import { updateAltText } from '@/features/upload/actions/upload-actions'
+import { updateAltText } from '@/features/assets/actions/upload-actions'
 import { downloadAsTxt } from '@/lib/download'
 import { useUploadStore } from '../store/upload-store'
 import {
@@ -183,10 +183,10 @@ export function AltSEOGenerator({
             value={variant}
             onValueChange={(v) => updateState({ variant: v as Variant })}
           >
-            <SelectTrigger className="w-full h-11 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm font-medium">
+            <SelectTrigger className="bg-white dark:bg-zinc-900 shadow-sm border-zinc-200 dark:border-zinc-800 rounded-2xl w-full h-11 font-medium">
               <SelectValue placeholder="Style" />
             </SelectTrigger>
-            <SelectContent className="rounded-2xl border-zinc-200 dark:border-zinc-800">
+            <SelectContent className="border-zinc-200 dark:border-zinc-800 rounded-2xl">
               <SelectItem value="default" className="rounded-xl">Default</SelectItem>
               <SelectItem value="seo" className="rounded-xl">SEO Focus</SelectItem>
               <SelectItem value="long" className="rounded-xl">Descriptive</SelectItem>
@@ -209,9 +209,9 @@ export function AltSEOGenerator({
         </Button>
 
         {error && (
-          <div className="p-3 bg-red-50 text-red-600 rounded-xl text-xs font-semibold flex items-center justify-between">
-            <span className="truncate mr-2">{error}</span>
-            <Button onClick={handleRetry} size="sm" variant="ghost" className="h-7 px-2 hover:bg-red-100 shrink-0">
+          <div className="flex justify-between items-center bg-red-50 p-3 rounded-xl font-semibold text-red-600 text-xs">
+            <span className="mr-2 truncate">{error}</span>
+            <Button onClick={handleRetry} size="sm" variant="ghost" className="hover:bg-red-100 px-2 h-7 shrink-0">
               <RefreshCw className="size-4" />
             </Button>
           </div>
@@ -221,20 +221,20 @@ export function AltSEOGenerator({
   }
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-zinc-900 rounded-[2.2rem]">
+    <div className="flex flex-col bg-white dark:bg-zinc-900 rounded-[2.2rem] h-full">
       {/* Content Area */}
-      <div className="relative group/text">
+      <div className="group/text relative">
         {isEditing ? (
           <Textarea
             ref={textareaRef}
             value={editingText}
             onChange={(e) => updateState({ editingText: e.target.value })}
-            className="min-h-[120px] w-full bg-zinc-50 border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-2xl p-4 text-sm font-medium leading-relaxed focus:ring-2 ring-primary/20 resize-none"
+            className="bg-zinc-50 dark:bg-zinc-800 p-4 border-zinc-200 dark:border-zinc-700 rounded-2xl ring-primary/20 focus:ring-2 w-full min-h-[120px] font-medium text-sm leading-relaxed resize-none"
             placeholder="Edit text..."
           />
         ) : (
-          <div className="relative min-h-[100px] flex flex-col z-0 px-1">
-            <p className="text-sm font-medium leading-relaxed text-zinc-700 dark:text-zinc-300 italic">
+          <div className="z-0 relative flex flex-col px-1 min-h-[100px]">
+            <p className="font-medium text-zinc-700 dark:text-zinc-300 text-sm italic leading-relaxed">
               "{currentAltText}"
             </p>
           </div>
@@ -242,7 +242,7 @@ export function AltSEOGenerator({
       </div>
 
       {/* Action Bar */}
-      <div className={cn("flex items-center justify-between gap-2 bg-zinc-50 dark:bg-zinc-800/50 p-1.5 rounded-full border border-zinc-100 dark:border-zinc-800 shadow-sm", {
+      <div className={cn("flex justify-between items-center gap-2 bg-zinc-50 dark:bg-zinc-800/50 shadow-sm p-1.5 border border-zinc-100 dark:border-zinc-800 rounded-full", {
         "mt-4": isEditing
       })}>
         {isEditing ? (
@@ -251,7 +251,7 @@ export function AltSEOGenerator({
               size="sm"
               onClick={() => updateState({ isEditing: false })}
               variant="ghost"
-              className="flex-1 rounded-full text-xs font-bold h-9"
+              className="flex-1 rounded-full h-9 font-bold text-xs"
             >
               Cancel
             </Button>
@@ -259,23 +259,23 @@ export function AltSEOGenerator({
               size="sm"
               onClick={handleSave}
               disabled={isSaving}
-              className="flex-2 rounded-full text-xs font-bold bg-zinc-900 text-white hover:bg-zinc-800 h-9"
+              className="flex-2 bg-zinc-900 hover:bg-zinc-800 rounded-full h-9 font-bold text-white text-xs"
             >
               {isSaving ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
-                <Save className="h-3.5 w-3.5 mr-1" />
+                <Save className="mr-1 w-3.5 h-3.5" />
               )}
               Save Changes
             </Button>
           </div>
         ) : (
-          <div className="flex items-center justify-between w-full px-1">
+          <div className="flex justify-between items-center px-1 w-full">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <Sparkles className="h-4 w-4" />
+              <div className="flex justify-center items-center bg-primary/10 rounded-full w-8 h-8 text-primary">
+                <Sparkles className="w-4 h-4" />
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Magic Alt SEO</span>
+              <span className="font-bold text-[10px] text-muted-foreground/70 uppercase tracking-wider">Magic Alt SEO</span>
             </div>
 
             {/* Menu Button */}
@@ -284,16 +284,16 @@ export function AltSEOGenerator({
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="rounded-full h-9 w-9 p-0 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                  className="hover:bg-zinc-200 dark:hover:bg-zinc-800 p-0 rounded-full w-9 h-9 transition-colors"
                 >
-                  <MoreHorizontal className="h-5 w-5" />
+                  <MoreHorizontal className="w-5 h-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="rounded-2xl p-1.5 w-56 shadow-2xl border-white/40 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90">
+              <DropdownMenuContent align="end" className="bg-white/90 dark:bg-zinc-900/90 shadow-2xl backdrop-blur-xl p-1.5 border-white/40 rounded-2xl w-56">
                 {onUpload && (
                   <>
-                    <DropdownMenuItem onClick={onUpload} className="rounded-xl h-11 font-bold text-primary focus:bg-primary/10 cursor-pointer">
-                      <Upload className="mr-3 h-4 w-4" />
+                    <DropdownMenuItem onClick={onUpload} className="focus:bg-primary/10 rounded-xl h-11 font-bold text-primary cursor-pointer">
+                      <Upload className="mr-3 w-4 h-4" />
                       Upload to Supabase
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -302,7 +302,7 @@ export function AltSEOGenerator({
 
                 <DropdownMenuItem onClick={copyToClipboard} >
                   {copied ? (
-                    <Check className="mr-3 h-4 w-4 text-green-500" />
+                    <Check className="mr-3 w-4 h-4 text-green-500" />
                   ) : (
                     <Copy className="mr-2 size-4" />
                   )}
@@ -339,7 +339,7 @@ export function AltSEOGenerator({
 
       {error && (
         <div className="px-4 pb-4">
-          <p className="text-[10px] text-red-500 font-bold text-center italic">{error}</p>
+          <p className="font-bold text-[10px] text-red-500 text-center italic">{error}</p>
         </div>
       )}
     </div>

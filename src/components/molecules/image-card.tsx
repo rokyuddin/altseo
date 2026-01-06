@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent } from '@/components/atoms/card'
-import { AltSEOGenerator } from '@/features/upload/components/alt-text-generator'
+import { AltSEOGenerator } from '@/features/assets/components/alt-text-generator'
 import { X, Image as ImageIcon, CheckCircle, Info, Maximize2, Trash2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
@@ -26,7 +26,7 @@ import {
   DialogTrigger,
 } from "@/components/atoms/dialog"
 import { cn } from '@/lib/utils'
-import { useUploadStore } from '@/features/upload/store/upload-store'
+import { useUploadStore } from '@/features/assets/store/upload-store'
 
 interface ImageCardProps {
   id: string
@@ -86,7 +86,7 @@ export function ImageCard({
 
   return (
     <Card className={cn(
-      "container-card pt-0 gap-0 group overflow-hidden bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-white/40 dark:border-zinc-800/40 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] transition-all duration-500",
+      "group gap-0 bg-white/80 dark:bg-zinc-900/80 shadow-[0_20px_50px_rgba(0,0,0,0.05)] backdrop-blur-xl pt-0 border-white/40 dark:border-zinc-800/40 rounded-[2.5rem] overflow-hidden transition-all duration-500 container-card",
       viewMode === 'list' ? "max-h-[300px]" : "",
       className
     )}>
@@ -95,43 +95,43 @@ export function ImageCard({
         viewMode === 'list' ? "flex-row gap-2" : "@2xl:flex-row"
       )}>
         <div className={cn(
-          "relative overflow-hidden rounded-4xl m-2 shadow-inner shrink-0",
+          "relative shadow-inner m-2 rounded-4xl overflow-hidden shrink-0",
           viewMode === 'list' ? "w-40 aspect-square" : "aspect-16/10 @2xl:aspect-square @2xl:w-1/3 @2xl:m-4 @2xl:mb-4"
         )}>
           <img
             src={previewUrl}
             alt={altText || fileName}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
 
           {/* Overlays */}
           <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
           {/* Status badges */}
-          <div className="absolute top-4 left-4 flex gap-2">
+          <div className="top-4 left-4 absolute flex gap-2">
             {altText && (
-              <div className="flex items-center gap-1.5 bg-green-500/90 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-lg animate-in zoom-in duration-300">
-                <CheckCircle className="h-3 w-3" />
+              <div className="flex items-center gap-1.5 bg-green-500/90 shadow-lg backdrop-blur-md px-3 py-1.5 rounded-full font-bold text-[10px] text-white uppercase tracking-wider animate-in duration-300 zoom-in">
+                <CheckCircle className="w-3 h-3" />
                 Generated
               </div>
             )}
           </div>
 
           {/* Action buttons overlay */}
-          <div className="absolute top-4 right-4 flex gap-2">
+          <div className="top-4 right-4 absolute flex gap-2">
             <Dialog open={showPreview} onOpenChange={setShowPreview}>
               <DialogTrigger asChild>
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-9 w-9 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 bg-white/20 backdrop-blur-md border-white/20 shadow-xl"
+                  className="bg-white/20 opacity-0 group-hover:opacity-100 shadow-xl backdrop-blur-md p-0 border-white/20 rounded-full w-9 h-9 hover:scale-110 transition-all duration-300"
                 >
-                  <Maximize2 className="h-4 w-4 text-white" />
+                  <Maximize2 className="w-4 h-4 text-white" />
                 </Button>
               </DialogTrigger>
               <DialogContent
                 showCloseButton={false}
-                className="md:max-w-4xl w-[95vw] h-[90vh] p-0 overflow-hidden bg-transparent border-none shadow-none flex items-center justify-center"
+                className="flex justify-center items-center bg-transparent shadow-none p-0 border-none w-[95vw] md:max-w-4xl h-[90vh] overflow-hidden"
               >
                 <DialogHeader className="sr-only">
                   <DialogTitle>Image Preview: {fileName}</DialogTitle>
@@ -139,24 +139,24 @@ export function ImageCard({
                     Full screen view of the selected image.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="relative w-full h-full flex items-center justify-center p-4">
-                  <div className="absolute inset-0 bg-black/60 backdrop-blur-3xl -z-10" onClick={() => setShowPreview(false)} />
+                <div className="relative flex justify-center items-center p-4 w-full h-full">
+                  <div className="-z-10 absolute inset-0 bg-black/60 backdrop-blur-3xl" onClick={() => setShowPreview(false)} />
                   <img
                     src={previewUrl}
                     alt={altText || fileName}
-                    className="max-w-full max-h-full object-contain rounded-3xl shadow-2xl animate-in zoom-in duration-300"
+                    className="shadow-2xl rounded-3xl max-w-full max-h-full object-contain animate-in duration-300 zoom-in"
                   />
                   <Button
                     onClick={() => setShowPreview(false)}
                     variant="ghost"
                     size="icon"
-                    className="absolute top-8 right-8 h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md"
+                    className="top-8 right-8 absolute bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full w-12 h-12 text-white"
                   >
-                    <X className="h-6 w-6" />
+                    <X className="w-6 h-6" />
                   </Button>
 
-                  <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black/40 backdrop-blur-xl px-6 py-3 rounded-full border border-white/10">
-                    <p className="text-white font-bold text-sm truncate max-w-[200px] md:max-w-md">{fileName}</p>
+                  <div className="bottom-8 left-1/2 absolute bg-black/40 backdrop-blur-xl px-6 py-3 border border-white/10 rounded-full -translate-x-1/2">
+                    <p className="max-w-[200px] md:max-w-md font-bold text-white text-sm truncate">{fileName}</p>
                   </div>
                 </div>
               </DialogContent>
@@ -169,26 +169,26 @@ export function ImageCard({
                     size="sm"
                     variant="destructive"
                     disabled={isDeleting}
-                    className="h-9 w-9 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 bg-white/20 hover:bg-red-500 backdrop-blur-md border-white/20 shadow-xl"
+                    className="bg-white/20 hover:bg-red-500 opacity-0 group-hover:opacity-100 shadow-xl backdrop-blur-md p-0 border-white/20 rounded-full w-9 h-9 hover:scale-110 transition-all duration-300"
                   >
-                    {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4 text-white" />}
+                    {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4 text-white" />}
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent className="rounded-4xl border-white/40 backdrop-blur-2xl bg-white/80">
+                <AlertDialogContent className="bg-white/80 backdrop-blur-2xl border-white/40 rounded-4xl">
                   <AlertDialogHeader>
-                    <AlertDialogTitle className="text-2xl font-bold">Delete this masterpiece?</AlertDialogTitle>
+                    <AlertDialogTitle className="font-bold text-2xl">Delete this masterpiece?</AlertDialogTitle>
                     <AlertDialogDescription className="text-muted-foreground text-lg">
                       This will permanently remove the image and its alt SEO metadata. This action cannot be undone.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter className="gap-3">
-                    <AlertDialogCancel className="rounded-full px-8 py-6 font-bold text-base border-zinc-200">Keep it</AlertDialogCancel>
+                    <AlertDialogCancel className="px-8 py-6 border-zinc-200 rounded-full font-bold text-base">Keep it</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={(e) => {
                         e.stopPropagation();
                         onDelete();
                       }}
-                      className="rounded-full px-8 py-6 bg-red-600 hover:bg-red-700 text-white font-bold text-base"
+                      className="bg-red-600 hover:bg-red-700 px-8 py-6 rounded-full font-bold text-white text-base"
                     >
                       Delete Forever
                     </AlertDialogAction>
@@ -201,19 +201,19 @@ export function ImageCard({
               <Button
                 size="sm"
                 variant="destructive"
-                className="h-9 w-9 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 bg-white/20 hover:bg-red-500 backdrop-blur-md border-white/20 shadow-xl"
+                className="bg-white/20 hover:bg-red-500 opacity-0 group-hover:opacity-100 shadow-xl backdrop-blur-md p-0 border-white/20 rounded-full w-9 h-9 hover:scale-110 transition-all duration-300"
                 onClick={onRemove}
               >
-                <X className="h-4 w-4 text-white" />
+                <X className="w-4 h-4 text-white" />
               </Button>
             )}
           </div>
 
           {/* File Info Float */}
-          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-none opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+          <div className="right-4 bottom-4 left-4 absolute flex justify-between items-center opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0 duration-500 pointer-events-none">
             <div className="flex gap-2">
               {width && height && viewMode !== 'list' && (
-                <span className="bg-black/40 backdrop-blur-md text-white/90 px-3 py-1 rounded-full text-[10px] font-medium border border-white/10">
+                <span className="bg-black/40 backdrop-blur-md px-3 py-1 border border-white/10 rounded-full font-medium text-[10px] text-white/90">
                   {width}×{height}
                 </span>
               )}
@@ -222,13 +222,13 @@ export function ImageCard({
         </div>
 
         <CardContent className={cn(
-          "flex-1 flex flex-col justify-center",
+          "flex flex-col flex-1 justify-center",
           viewMode === 'list' ? "p-2" : "p-4 @2xl:p-6 @2xl:pl-2"
         )}>
           <div className="space-y-2">
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex justify-between items-center gap-2">
               <h3 className={cn(
-                "font-bold text-foreground truncate flex-1 tracking-tight",
+                "flex-1 font-bold text-foreground truncate tracking-tight",
                 viewMode === 'list' ? "text-base" : "text-lg @2xl:text-xl"
               )}>
                 {fileName}
@@ -236,13 +236,13 @@ export function ImageCard({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 rounded-full p-0">
-                      <Info className="h-4 w-4 text-muted-foreground" />
+                    <Button variant="ghost" size="sm" className="p-0 rounded-full w-8 h-8">
+                      <Info className="w-4 h-4 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent className="rounded-xl p-3 bg-zinc-900 border-zinc-800">
-                    <p className="text-xs text-zinc-400">File Type: <span className="text-white font-bold">{mimeType || 'Unknown'}</span></p>
-                    {fileSize && <p className="text-xs text-zinc-400">Size: <span className="text-white font-bold">{(fileSize / 1024 / 1024).toFixed(2)} MB</span></p>}
+                  <TooltipContent className="bg-zinc-900 p-3 border-zinc-800 rounded-xl">
+                    <p className="text-zinc-400 text-xs">File Type: <span className="font-bold text-white">{mimeType || 'Unknown'}</span></p>
+                    {fileSize && <p className="text-zinc-400 text-xs">Size: <span className="font-bold text-white">{(fileSize / 1024 / 1024).toFixed(2)} MB</span></p>}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

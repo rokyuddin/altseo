@@ -138,7 +138,7 @@ export async function deleteImage(imageId: string, storagePath: string) {
       return { error: dbError.message }
     }
 
-    revalidatePath('/upload')
+    revalidatePath('/assets')
     return { success: true }
   } catch (error) {
     console.error('Delete image error:', error)
