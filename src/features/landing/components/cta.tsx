@@ -3,20 +3,19 @@ import { Button } from "@/components/atoms/button";
 
 export function CTASection() {
     return (
-        <section className="py-20 @md:py-32 px-4 @md:px-6 text-center container-section">
-            <div className="max-w-3xl mx-auto space-y-6 @md:space-y-8">
-                <h2 className="text-4xl @md:text-7xl font-bold text-foreground tracking-tight">
-                    Ready to <span className="text-primary italic font-serif">bloom?</span>
+        <section className="px-4 @md:px-6 py-20 @md:py-32 text-center container-section">
+            <div className="space-y-6 @md:space-y-8 mx-auto max-w-3xl">
+                <h2 className="font-bold text-foreground text-4xl @md:text-7xl tracking-tight">
+                    Scale Your <span className="font-serif text-primary italic">Image SEO.</span>
                 </h2>
-                <p className="text-lg @md:text-xl text-muted-foreground font-light max-w-2xl mx-auto">
-                    Join thousands of creators making the web a more welcoming,
-                    organic place for everyone.
+                <p className="mx-auto max-w-2xl font-light text-muted-foreground text-lg @md:text-xl">
+                    Join thousands of developers and teams automating their image accessibility and search rankings.
                 </p>
-                <div className="pt-6 @md:pt-8 flex flex-col @sm:flex-row justify-center gap-4">
+                <div className="flex @sm:flex-row flex-col justify-center gap-4 pt-6 @md:pt-8">
                     <Link href="/register" className="w-full @sm:w-auto">
                         <Button
                             size="lg"
-                            className="w-full rounded-full h-14 @md:h-16 px-8 @md:px-12 text-base @md:text-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-xl hover:-translate-y-1"
+                            className="bg-primary hover:bg-primary/90 shadow-xl px-8 @md:px-12 rounded-full w-full h-14 @md:h-16 text-primary-foreground text-base @md:text-lg transition-all hover:-translate-y-1"
                         >
                             Start Your Free Trial
                         </Button>
@@ -25,7 +24,7 @@ export function CTASection() {
                         <Button
                             variant="ghost"
                             size="lg"
-                            className="w-full rounded-full h-14 @md:h-16 px-8 @md:px-12 text-base @md:text-lg text-foreground hover:bg-muted/50"
+                            className="hover:bg-muted/50 px-8 @md:px-12 rounded-full w-full h-14 @md:h-16 text-foreground text-base @md:text-lg"
                         >
                             Contact Us
                         </Button>

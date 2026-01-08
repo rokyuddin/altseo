@@ -36,26 +36,26 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="slide-in-from-bottom-4 space-y-8 w-full animate-in duration-700 fade-in">
       {/* Header */}
-      <div className="text-center space-y-3">
-        <h1 className="text-3xl font-serif font-semibold tracking-tight text-foreground">
+      <div className="space-y-3 text-center">
+        <h1 className="font-serif font-semibold text-foreground text-3xl tracking-tight">
           Welcome back
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          Enter your credentials to access your account
+          Sign in to manage your automated image SEO
         </p>
       </div>
 
       {/* Form Card - Organic rounded design */}
-      <Card className="w-full border-2 border-border/50 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5 rounded-3xl overflow-hidden relative">
+      <Card className="relative bg-card/80 shadow-primary/5 shadow-xl backdrop-blur-sm border-2 border-border/50 rounded-3xl w-full overflow-hidden">
         {/* Organic accent gradient */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-        
+        <div className="top-0 right-0 left-0 absolute bg-linear-to-r from-transparent via-primary/30 to-transparent h-1" />
+
         <CardContent className="p-8 pt-10">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-2.5">
-              <Label htmlFor="email" className="text-sm font-medium text-foreground/90">
+              <Label htmlFor="email" className="font-medium text-foreground/90 text-sm">
                 Email address
               </Label>
               <Input
@@ -63,11 +63,11 @@ export function LoginForm() {
                 type="email"
                 placeholder="you@example.com"
                 disabled={isPending}
-                className="h-12 rounded-2xl border-2 bg-background/50 transition-all duration-200 focus:border-primary/50 focus:bg-background focus:shadow-lg focus:shadow-primary/10"
+                className="bg-background/50 focus:bg-background focus:shadow-lg focus:shadow-primary/10 border-2 focus:border-primary/50 rounded-2xl h-12 transition-all duration-200"
                 {...register('email')}
               />
               {errors.email && (
-                <span className="text-xs text-destructive font-medium ml-1 flex items-center gap-1">
+                <span className="flex items-center gap-1 ml-1 font-medium text-destructive text-xs">
                   <span>•</span>
                   {errors.email.message}
                 </span>
@@ -75,13 +75,13 @@ export function LoginForm() {
             </div>
 
             <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-sm font-medium text-foreground/90">
+              <div className="flex justify-between items-center">
+                <Label htmlFor="password" className="font-medium text-foreground/90 text-sm">
                   Password
                 </Label>
                 <Link
                   href="#"
-                  className="text-xs text-primary hover:text-primary/80 font-medium transition-colors"
+                  className="font-medium text-primary hover:text-primary/80 text-xs transition-colors"
                 >
                   Forgot password?
                 </Link>
@@ -91,11 +91,11 @@ export function LoginForm() {
                 type="password"
                 placeholder="••••••••"
                 disabled={isPending}
-                className="h-12 rounded-2xl border-2 bg-background/50 transition-all duration-200 focus:border-primary/50 focus:bg-background focus:shadow-lg focus:shadow-primary/10"
+                className="bg-background/50 focus:bg-background focus:shadow-lg focus:shadow-primary/10 border-2 focus:border-primary/50 rounded-2xl h-12 transition-all duration-200"
                 {...register('password')}
               />
               {errors.password && (
-                <span className="text-xs text-destructive font-medium ml-1 flex items-center gap-1">
+                <span className="flex items-center gap-1 ml-1 font-medium text-destructive text-xs">
                   <span>•</span>
                   {errors.password.message}
                 </span>
@@ -103,21 +103,21 @@ export function LoginForm() {
             </div>
 
             {errors.root?.message && (
-              <div className="p-4 rounded-2xl bg-destructive/10 border border-destructive/20 backdrop-blur-sm">
-                <p className="text-sm text-destructive text-center font-medium">
+              <div className="bg-destructive/10 backdrop-blur-sm p-4 border border-destructive/20 rounded-2xl">
+                <p className="font-medium text-destructive text-sm text-center">
                   {errors.root.message}
                 </p>
               </div>
             )}
 
-            <Button 
-              type="submit" 
-              className="w-full h-12 rounded-2xl font-semibold text-base shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]" 
+            <Button
+              type="submit"
+              className="shadow-lg shadow-primary/20 hover:shadow-primary/30 hover:shadow-xl rounded-2xl w-full h-12 font-semibold text-base hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
               disabled={isPending}
             >
               {isPending ? (
                 <span className="flex items-center gap-2">
-                  <span className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  <span className="border-2 border-current border-t-transparent rounded-full w-4 h-4 animate-spin" />
                   Signing in...
                 </span>
               ) : (
@@ -127,15 +127,15 @@ export function LoginForm() {
           </form>
         </CardContent>
 
-        <CardFooter className="px-8 pb-8 pt-0 justify-center border-t border-border/30 bg-muted/20">
-          <p className="text-sm text-muted-foreground">
+        <CardFooter className="justify-center bg-muted/20 px-8 pt-0 pb-8 border-border/30 border-t">
+          <p className="text-muted-foreground text-sm">
             Don't have an account?{' '}
-            <Link 
-              href="/register" 
-              className="font-semibold text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 group"
+            <Link
+              href="/register"
+              className="group inline-flex items-center gap-1 font-semibold text-primary hover:text-primary/80 transition-colors"
             >
               Sign up
-              <span className="group-hover:translate-x-0.5 transition-transform inline-block">→</span>
+              <span className="inline-block transition-transform group-hover:translate-x-0.5">→</span>
             </Link>
           </p>
         </CardFooter>
@@ -144,9 +144,9 @@ export function LoginForm() {
       {/* Decorative organic element */}
       <div className="flex justify-center">
         <div className="flex gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" />
-          <div className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-pulse" style={{ animationDelay: '0.2s' }} />
-          <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: '0.4s' }} />
+          <div className="bg-primary/40 rounded-full w-1.5 h-1.5 animate-pulse" />
+          <div className="bg-primary/60 rounded-full w-1.5 h-1.5 animate-pulse" style={{ animationDelay: '0.2s' }} />
+          <div className="bg-primary/40 rounded-full w-1.5 h-1.5 animate-pulse" style={{ animationDelay: '0.4s' }} />
         </div>
       </div>
     </div>

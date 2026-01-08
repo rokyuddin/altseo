@@ -9,4 +9,5 @@ export const HOME_LINKS = [
     { href: "#features", label: "Grow" },
     { href: "#methodology", label: "Process" },
     { href: "#pricing", label: "Pricing" },
+    { href: "/contact", label: "Contact" },
 ];

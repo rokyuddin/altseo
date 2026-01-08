@@ -18,14 +18,12 @@ export function Hero() {
                 </div>
 
                 <h1 className="slide-in-from-bottom-6 font-bold text-foreground text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] tracking-tight animate-in duration-1000 delay-100 fade-in">
-                    Let your images <br className="hidden" />
-                    <span className="font-serif text-primary italic">breathe.</span>
+                    Automated ALT Text <br className="hidden sm:block" />
+                    <span className="font-serif text-primary italic">& Image SEO.</span>
                 </h1>
 
                 <p className="slide-in-from-bottom-8 mx-auto px-2 xs:px-0 max-w-xs sm:max-w-xl md:max-w-2xl font-light text-muted-foreground text-base sm:text-xl md:text-2xl leading-relaxed animate-in duration-1000 delay-200 fade-in">
-                    Cultivate a more accessible, search-optimized web. Generate
-                    organic, keyword-rich descriptions that drive discovery while
-                    ensuring true inclusivity.
+                    Drive organic traffic and ensure web accessibility. <strong>AltSEO</strong> uses enterprise-grade AI to generate keyword-rich descriptions for your visual content in seconds.
                 </p>
 
                 <div className="slide-in-from-bottom-10 flex sm:flex-row flex-col justify-center items-center gap-3 pt-6 animate-in duration-1000 delay-300 fade-in">

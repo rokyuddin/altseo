@@ -41,10 +41,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <div className="space-y-6">
             <div className="space-y-4">
               <h2 className="font-serif font-semibold text-foreground text-3xl tracking-tight">
-                Let your images <span className="text-primary italic">breathe.</span>
+                Automated ALT Text <br />
+                <span className="text-primary italic">& Image SEO.</span>
               </h2>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                Generate organic, keyword-rich descriptions that drive discovery while ensuring true inclusivity.
+                Generate keyword-rich descriptions automatically that drive discovery while ensuring web accessibility.
               </p>
             </div>
 

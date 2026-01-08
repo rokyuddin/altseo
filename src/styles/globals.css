@@ -253,6 +253,15 @@
     .duration-700 {
         animation-duration: 700ms;
     }
+
+    @keyframes shimmer {
+        from {
+            transform: translateX(-100%);
+        }
+        to {
+            transform: translateX(100%);
+        }
+    }
 }
 
 /* Container Query Variants */

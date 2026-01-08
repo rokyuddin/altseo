@@ -9,7 +9,7 @@ export function DemoSection() {
                     Try It Now
                 </div>
                 <h2 className="mb-6 xs:mb-8 font-bold text-foreground text-3xl sm:text-5xl md:text-6xl leading-tight">
-                    Experience the Magic
+                    See AI ALT Text in Action
                 </h2>
                 <p className="mx-auto px-2 xs:px-0 max-w-xs sm:max-w-xl md:max-w-2xl text-muted-foreground text-base sm:text-xl leading-relaxed">
                     Upload an image and see how AI transforms it into accessible,

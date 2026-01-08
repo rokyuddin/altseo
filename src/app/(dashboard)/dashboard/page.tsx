@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import { DashboardStats, DashboardStatsLoader, QuickActions, QuotaChart, RecentResults, RecentResultsLoader } from "@/features/dashboard";
+
+export const metadata: Metadata = {
+  title: 'Dashboard | AltSEO - Image SEO Overview',
+  description: 'View your image SEO analytics and accessibility metrics at a glance.',
+}
 import { Sparkles } from "lucide-react";
 import { Suspense } from "react";
 

@@ -2,22 +2,22 @@ import { Leaf, Sun, Wind } from "lucide-react";
 
 const FEATURES = [
     {
-        icon: Leaf,
-        title: "Organic Growth",
-        desc: "Our models adapt to your brand voice, ensuring consistent, high-quality descriptions that scale with your library.",
-        color: "bg-green-500/10 text-green-600",
-    },
-    {
         icon: Wind,
-        title: "Search Engine Harmony",
-        desc: "Boost organic visibility naturally. We weave relevant keywords into semantic narratives that search engines prioritize.",
+        title: "Automated SEO Optimization",
+        desc: "Boost organic visibility automatically. We weave relevant keywords into semantic descriptions that search engines prioritize.",
         color: "bg-blue-500/10 text-blue-600",
     },
     {
         icon: Sun,
-        title: "Accessible Core",
-        desc: "Built from the ground up to nurture inclusivity, ensuring your content reaches every user in the digital ecosystem.",
+        title: "WCAG Accessibility",
+        desc: "Built from the ground up for inclusivity, ensuring your content meets global accessibility standards like WCAG 2.1.",
         color: "bg-amber-500/10 text-amber-600",
+    },
+    {
+        icon: Leaf,
+        title: "Scalable AI Vision",
+        desc: "Our enterprise AI models adapt to your library, delivering high-quality, context-aware ALT text for thousands of images.",
+        color: "bg-green-500/10 text-green-600",
     },
 ];
 
