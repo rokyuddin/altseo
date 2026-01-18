@@ -20,16 +20,14 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { CreemCheckout } from "@creem_io/nextjs";
 
 interface PricingSectionProps {
   user?: any;
   userPlan?: string;
 }
 
-export function PricingSection({
-  user,
-  userPlan,
-}: PricingSectionProps) {
+export function PricingSection({ user, userPlan }: PricingSectionProps) {
   const [isUpgrading, setIsUpgrading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -54,42 +52,25 @@ export function PricingSection({
     }
 
     setIsUpgrading(true);
-    try {
-      const response = await fetch("/api/upgrade-plan", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        setTimeout(() => {
-          setIsUpgrading(false);
-          router.push("/?success=upgrade#pricing");
-        }, 1000);
-      } else {
-        const data = await response.json();
-        alert(data.error || "Failed to upgrade plan");
-        setIsUpgrading(false);
-      }
-    } catch (error) {
-      console.error("Upgrade error:", error);
-      alert("Failed to upgrade plan. Please try again.");
-      setIsUpgrading(false);
-    }
+    // This function is now mostly for analytics or pre-checkout logic if needed
+    // But CreemCheckout handles the actual redirect.
+    setIsUpgrading(false);
   };
 
   return (
-    <section id="pricing" className="py-16 @md:py-32 px-4 @md:px-6 relative container-section">
+    <section
+      id="pricing"
+      className="relative px-4 @md:px-6 py-16 @md:py-32 container-section"
+    >
       {/* Organic Background */}
-      <div className="absolute inset-0 bg-linear-to-b from-background via-secondary/20 to-background rounded-3xl @md:rounded-4xl mx-2 @md:mx-8 -z-10" />
+      <div className="-z-10 absolute inset-0 bg-linear-to-b from-background via-secondary/20 to-background mx-2 @md:mx-8 rounded-3xl @md:rounded-4xl" />
 
       {/* Success Alert */}
       {showSuccess && (
-        <div className="max-w-2xl mx-auto mb-10 @md:mb-12 animate-in fade-in slide-in-from-top-4 duration-500">
-          <Alert className="bg-primary/10 border-primary text-primary rounded-2xl @md:rounded-3xl border-2">
+        <div className="slide-in-from-top-4 mx-auto mb-10 @md:mb-12 max-w-2xl animate-in duration-500 fade-in">
+          <Alert className="bg-primary/10 border-2 border-primary rounded-2xl @md:rounded-3xl text-primary">
             <Check className="size-5" />
-            <AlertDescription className="text-base @md:text-lg font-medium">
+            <AlertDescription className="font-medium text-base @md:text-lg">
               Welcome to Pro! Your plan has been upgraded successfully. Enjoy
               unlimited access to all features.
             </AlertDescription>
@@ -97,32 +78,34 @@ export function PricingSection({
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-12 @md:mb-20">
-          <div className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary font-bold text-[10px] @md:text-xs uppercase tracking-widest mb-6">
+      <div className="z-10 relative mx-auto max-w-6xl">
+        <div className="mb-12 @md:mb-20 text-center">
+          <div className="inline-block bg-primary/10 mb-6 px-4 py-1 rounded-full font-bold text-[10px] text-primary @md:text-xs uppercase tracking-widest">
             Choose Your Plan
           </div>
-          <h2 className="text-3xl @md:text-6xl font-bold mb-6 text-foreground leading-tight">
+          <h2 className="mb-6 font-bold text-foreground text-3xl @md:text-6xl leading-tight">
             Grow Naturally with AltSEO
           </h2>
-          <p className="text-lg @md:text-xl text-muted-foreground font-light max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl font-light text-muted-foreground text-lg @md:text-xl">
             Start free and scale as your needs blossom. Our plans are designed
             to nurture your creative journey.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 @md:grid-cols-2 gap-6 @md:gap-8 lg:gap-12 max-w-4xl mx-auto">
+        <div className="gap-6 @md:gap-8 lg:gap-12 grid grid-cols-1 @md:grid-cols-2 mx-auto max-w-4xl">
           {/* Free Plan */}
-          <Card className="bg-card/80 backdrop-blur-sm border border-border shadow-sm hover:shadow-md rounded-3xl @md:rounded-4xl transition-all duration-500 hover:-translate-y-1">
-            <CardHeader className="text-center pb-6 pt-8">
-              <div className="size-14 @md:size-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-primary/20">
+          <Card className="bg-card/80 shadow-sm hover:shadow-md backdrop-blur-sm border border-border rounded-3xl @md:rounded-4xl transition-all hover:-translate-y-1 duration-500">
+            <CardHeader className="pt-8 pb-6 text-center">
+              <div className="flex justify-center items-center bg-primary/10 mx-auto mb-4 border border-primary/20 rounded-full size-14 @md:size-16">
                 <Leaf className="size-7 @md:size-8 text-primary" />
               </div>
-              <CardTitle className="text-xl @md:text-2xl font-bold text-foreground mb-1 @md:mb-2">
+              <CardTitle className="mb-1 @md:mb-2 font-bold text-foreground text-xl @md:text-2xl">
                 Free
               </CardTitle>
-              <div className="text-2xl @md:text-3xl font-bold text-primary mb-1">$0</div>
-              <p className="text-xs @md:text-sm text-muted-foreground">
+              <div className="mb-1 font-bold text-primary text-2xl @md:text-3xl">
+                $0
+              </div>
+              <p className="text-muted-foreground text-xs @md:text-sm">
                 Perfect for getting started
               </p>
             </CardHeader>
@@ -137,7 +120,7 @@ export function PricingSection({
                 ].map((feature, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <CheckCircle className="size-4 text-primary shrink-0" />
-                    <span className="text-sm text-foreground">{feature}</span>
+                    <span className="text-foreground text-sm">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -154,7 +137,7 @@ export function PricingSection({
                     <Link href="/dashboard">
                       <Button
                         variant="outline"
-                        className="w-full rounded-full border-primary/30 hover:bg-primary/5 py-5 @md:py-6"
+                        className="hover:bg-primary/5 py-5 @md:py-6 border-primary/30 rounded-full w-full"
                       >
                         Dashboard
                       </Button>
@@ -164,7 +147,7 @@ export function PricingSection({
                   <Link href="/register">
                     <Button
                       variant="outline"
-                      className="w-full rounded-full border-primary/30 hover:bg-primary/5 font-semibold py-5 @md:py-6"
+                      className="hover:bg-primary/5 py-5 @md:py-6 border-primary/30 rounded-full w-full font-semibold"
                     >
                       Get Started
                     </Button>
@@ -175,25 +158,27 @@ export function PricingSection({
           </Card>
 
           {/* Pro Plan */}
-          <Card className="relative bg-linear-to-br from-card via-primary/5 to-accent/5 backdrop-blur-sm border border-primary/20 shadow-md hover:shadow-lg rounded-3xl @md:rounded-4xl transition-all duration-500 hover:-translate-y-1">
+          <Card className="relative bg-linear-to-br from-card via-primary/5 to-accent/5 shadow-md hover:shadow-lg backdrop-blur-sm border border-primary/20 rounded-3xl @md:rounded-4xl transition-all hover:-translate-y-1 duration-500">
             {/* Popular Badge */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-              <div className="bg-linear-to-r from-primary to-accent text-primary-foreground px-4 py-1 rounded-full font-bold text-[10px] @md:text-xs shadow-sm">
+            <div className="-top-3 left-1/2 z-20 absolute -translate-x-1/2">
+              <div className="bg-linear-to-r from-primary to-accent shadow-sm px-4 py-1 rounded-full font-bold text-[10px] text-primary-foreground @md:text-xs">
                 🌱 Popular
               </div>
             </div>
 
-            <CardHeader className="text-center pb-6 pt-10">
-              <div className="size-14 @md:size-16 bg-linear-to-br from-primary/10 to-accent/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-primary/20">
+            <CardHeader className="pt-10 pb-6 text-center">
+              <div className="flex justify-center items-center bg-linear-to-br from-primary/10 to-accent/10 mx-auto mb-4 border border-primary/20 rounded-full size-14 @md:size-16">
                 <Crown className="size-7 @md:size-8 text-primary" />
               </div>
-              <CardTitle className="text-xl @md:text-2xl font-bold text-foreground mb-1 @md:mb-2">
+              <CardTitle className="mb-1 @md:mb-2 font-bold text-foreground text-xl @md:text-2xl">
                 Pro
               </CardTitle>
-              <div className="text-2xl @md:text-3xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent mb-1 font-serif italic">
+              <div className="bg-clip-text bg-linear-to-r from-primary to-accent mb-1 font-serif font-bold text-transparent text-2xl @md:text-3xl italic">
                 $9.99
               </div>
-              <p className="text-xs @md:text-sm text-muted-foreground">Per month</p>
+              <p className="text-muted-foreground text-xs @md:text-sm">
+                Per month
+              </p>
             </CardHeader>
 
             <CardContent className="space-y-4 pb-8">
@@ -208,7 +193,7 @@ export function PricingSection({
                 ].map((feature, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <CheckCircle className="size-4 text-primary shrink-0" />
-                    <span className="text-sm text-foreground">{feature}</span>
+                    <span className="text-foreground text-sm">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -222,27 +207,36 @@ export function PricingSection({
                       </Badge>
                     </div>
                   ) : (
-                    <Button
-                      onClick={handleUpgrade}
-                      disabled={isUpgrading}
-                      className="w-full rounded-full bg-linear-to-r from-primary to-accent hover:opacity-90 transition-opacity font-semibold shadow-lg shadow-primary/20 py-5 @md:py-6"
+                    <CreemCheckout
+                      productId={process.env.NEXT_PUBLIC_CREEM_PRODUCT_ID!}
+                      referenceId={user.id}
+                      customer={{ email: user.email }}
+                      metadata={{
+                        userId: user.id,
+                        plan: "pro",
+                      }}
                     >
-                      {isUpgrading ? (
-                        <>
-                          <Loader2 className="size-4 animate-spin mr-2" />
-                          Upgrading...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="size-4 mr-2" />
-                          Upgrade Now
-                        </>
-                      )}
-                    </Button>
+                      <Button
+                        disabled={isUpgrading}
+                        className="bg-linear-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 py-5 @md:py-6 rounded-full w-full font-semibold transition-opacity"
+                      >
+                        {isUpgrading ? (
+                          <>
+                            <Loader2 className="mr-2 size-4 animate-spin" />
+                            Upgrading...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="mr-2 size-4" />
+                            Upgrade Now
+                          </>
+                        )}
+                      </Button>
+                    </CreemCheckout>
                   )
                 ) : (
                   <Link href="/register">
-                    <Button className="w-full rounded-full bg-linear-to-r from-primary to-accent hover:opacity-90 transition-opacity font-bold shadow-lg shadow-primary/20 py-5 @md:py-6">
+                    <Button className="bg-linear-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 py-5 @md:py-6 rounded-full w-full font-bold transition-opacity">
                       Get Started
                     </Button>
                   </Link>
