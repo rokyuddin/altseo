@@ -50,7 +50,6 @@ export default function Home() {
 
       <main className="container-inline-size">
         <Hero />
-        <DemoSection />
         <FeaturesSection />
         <MethodologySection />
         <TestimonialSection />

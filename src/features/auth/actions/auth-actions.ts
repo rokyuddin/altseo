@@ -13,17 +13,69 @@ export async function login(data: LoginInput) {
 
   const supabase = await createClientServer()
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data: { user }, error: authError } = await supabase.auth.signInWithPassword({
     email: result.data.email,
     password: result.data.password,
   })
 
-  if (error) {
-    return { error: error.message }
+  if (authError || !user) {
+    return { error: authError?.message || 'Login failed' }
+  }
+
+  // Check if operator for redirection (as before)
+  const { data: operator } = await supabase
+    .from('operators')
+    .select('is_active')
+    .eq('auth_user_id', user.id)
+    .single()
+
+  revalidatePath('/', 'layout')
+  
+  if (operator?.is_active) {
+    redirect('/admin')
+  }
+
+  redirect('/dashboard')
+}
+
+export async function adminLogin(data: LoginInput) {
+  console.log("Starting...")
+  const result = loginSchema.safeParse(data)
+  if (!result.success) {
+    return { error: 'Invalid input' }
+  }
+
+  console.log("Validating...")
+
+  const supabase = await createClientServer()
+
+  console.log("Creating client...")
+
+  const { data: { user }, error: authError } = await supabase.auth.signInWithPassword({
+    email: result.data.email,
+    password: result.data.password,
+  })
+
+  console.log(authError)
+
+  if (authError || !user) {
+    return { error: authError?.message || 'Login failed' }
+  }
+
+  // Verify operator status strictly for admin login
+  const { data: operator } = await supabase
+    .from('operators')
+    .select('is_active')
+    .eq('auth_user_id', user.id)
+    .single()
+
+  if (!operator?.is_active) {
+    await supabase.auth.signOut()
+    return { error: 'Access denied. Only platform operators can log in here.' }
   }
 
   revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  redirect('/admin')
 }
 
 export async function signup(data: RegisterInput) {

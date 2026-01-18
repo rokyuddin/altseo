@@ -8,6 +8,7 @@ interface LogoProps {
   textClassName?: string
   size?: 'sm' | 'md' | 'lg'
   href?: string
+  hideText?: boolean
 }
 
 const sizeMap = {
@@ -33,7 +34,8 @@ export function Logo({
   iconClassName, 
   textClassName,
   size = 'md',
-  href = '/'
+  href = '/',
+  hideText = false
 }: LogoProps) {
   const sizes = sizeMap[size]
   
@@ -46,9 +48,11 @@ export function Logo({
       )}>
         <Leaf className={cn('fill-current', sizes.icon)} />
       </div>
-      <span className={cn('font-bold tracking-tight', sizes.text, textClassName)}>
-        AltSEO
-      </span>
+      {!hideText && (
+        <span className={cn('font-bold tracking-tight', sizes.text, textClassName)}>
+          AltSEO
+        </span>
+      )}
     </div>
   )
 

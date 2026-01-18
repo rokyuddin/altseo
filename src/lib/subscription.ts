@@ -9,7 +9,7 @@ export interface UserSubscription {
   id: string
   user_id: string
   plan_type: PlanType
-  subscription_status: 'active' | 'cancelled' | 'expired'
+  subscription_status: 'active' | 'canceled' | 'unpaid' | 'paused' | 'trialing' | 'expired' | 'past_due'
   created_at: string
   updated_at: string
 }
