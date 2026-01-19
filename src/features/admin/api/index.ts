@@ -177,20 +177,44 @@ export async function getOperators() {
 }
 
 export async function getRoles() {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase.from('app_roles').select('id, name');
-  if (error) {
+  "use cache";
+  cacheLife('days')
+  cacheTag('roles')
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from('app_roles')
+      .select(`
+        id,
+      name,
+      role_permissions (
+        permission_id
+      )
+    `)
+      .order('name');
+
+    if (error) {
+      console.error("Error fetching roles:", error);
+      return [];
+    }
+
+    // Transform data to flat structure
+    return data.map((role: any) => ({
+      id: role.id,
+      name: role.name,
+      assignedPermissionIds: role.role_permissions ? role.role_permissions.map((rp: any) => rp.permission_id) : [],
+    }));
+  } catch (error) {
     console.error("Error fetching roles:", error);
     return [];
   }
-  return data;
 }
 
 export async function getAuditLogs() {
+  "use cache";
+  cacheLife('weeks')
+  cacheTag('audit-logs')
   try {
-    "use cache";
-    cacheLife('weeks')
-    cacheTag('audit-logs')
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from('admin_audit_logs')
@@ -210,10 +234,10 @@ export async function getAuditLogs() {
 }
 
 export async function getPermissions() {
+  "use cache";
+  cacheLife('weeks')
+  cacheTag('permissions')
   try {
-    "use cache";
-    cacheLife('weeks')
-    cacheTag('permissions')
     const supabase = createAdminClient();
     const { data, error } = await supabase.from('app_permissions').select('*');
     if (error) {
@@ -228,10 +252,10 @@ export async function getPermissions() {
 }
 
 export async function getRolePermissions() {
+  "use cache";
+  cacheLife('days')
+  cacheTag('role-permissions')
   try {
-    "use cache";
-    cacheLife('days')
-    cacheTag('role-permissions')
     const supabase = createAdminClient();
     const { data, error } = await supabase.from('role_permissions').select('*');
     if (error) {
