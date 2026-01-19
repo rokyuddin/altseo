@@ -1,3 +1,4 @@
+import { use } from "react";
 import { getSubscriptionDetails } from "../api";
 import { SubscriptionsTable } from "./subscriptions-table";
 import {
@@ -8,8 +9,8 @@ import {
   CardDescription,
 } from "@/components/atoms/card";
 
-export async function AdminSubscriptions() {
-  const subscriptions = await getSubscriptionDetails();
+export function AdminSubscriptions() {
+  const subscriptions = use(getSubscriptionDetails())
 
   return (
     <div className="slide-in-from-bottom-4 flex flex-col flex-1 space-y-8 overflow-y-auto animate-in duration-700 fade-in">

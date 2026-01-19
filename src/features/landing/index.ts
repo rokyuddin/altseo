@@ -1,5 +1,4 @@
 export { Hero } from './components/hero';
-export { DemoSection } from './components/demo';
 export { FeaturesSection } from './components/features';
 export { MethodologySection } from './components/methodology';
 export { TestimonialSection } from './components/testimonial';

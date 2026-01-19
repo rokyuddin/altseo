@@ -2,7 +2,7 @@
 import { Suspense } from "react";
 import { HomeHeader } from "@/components/organisms/home-header";
 import Footer from "@/components/organisms/footer";
-import { CTASection, DemoSection, FAQSection, FeaturesSection, Hero, MethodologySection, PricingContainer, PricingSkeleton, TestimonialSection } from "@/features/landing";
+import { CTASection, FAQSection, FeaturesSection, Hero, MethodologySection, PricingContainer, PricingSkeleton, TestimonialSection } from "@/features/landing";
 import HomeHeaderSkeleton from "@/components/organisms/home-header-skeleton";
 
 const jsonLd = {

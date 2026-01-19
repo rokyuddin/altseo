@@ -1,3 +1,4 @@
+import { use } from "react";
 import { getUsers } from "../api";
 import { UsersTable } from "./users-table";
 import {
@@ -8,8 +9,8 @@ import {
   CardDescription,
 } from "@/components/atoms/card";
 
-export async function AdminUsers() {
-  const users = await getUsers();
+export function AdminUsers() {
+  const users = use(getUsers())
 
   return (
     <div className="slide-in-from-bottom-4 flex flex-col flex-1 space-y-8 overflow-y-auto animate-in duration-700 fade-in">

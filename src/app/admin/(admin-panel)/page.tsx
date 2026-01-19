@@ -1,31 +1,12 @@
 import { AdminOverview } from "@/features/admin/components/admin-overview";
 import { Suspense } from "react";
-import { Skeleton } from "@/components/atoms/skeleton";
+import { Spinner } from "@/components/atoms/spinner";
 
 export default function AdminPage() {
   return (
-    <Suspense fallback={<AdminDashboardSkeleton />}>
+    <Suspense fallback={<Spinner className="size-10" containerClassName="flex-1" />}>
       <AdminOverview />
     </Suspense>
   );
 }
 
-function AdminDashboardSkeleton() {
-  return (
-    <div className="space-y-8">
-      <div className="space-y-2">
-        <Skeleton className="h-10 w-64" />
-        <Skeleton className="h-4 w-96" />
-      </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {[1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="h-32 w-full rounded-xl" />
-        ))}
-      </div>
-      <div className="grid gap-4 md:grid-cols-7">
-        <Skeleton className="col-span-4 h-[400px] w-full rounded-xl" />
-        <Skeleton className="col-span-3 h-[400px] w-full rounded-xl" />
-      </div>
-    </div>
-  );
-}

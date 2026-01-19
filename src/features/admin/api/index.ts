@@ -87,37 +87,52 @@ export async function getUsageStats() {
 }
 
 export async function getUsers() {
-  const supabase = createAdminClient();
 
-  const {
-    data: { users },
-    error,
-  } = await supabase.auth.admin.listUsers();
+  "use cache"
+  cacheLife('days')
+  cacheTag('users')
 
-  if (error) {
+  try {
+    const supabase = createAdminClient();
+
+    const {
+      data: { users },
+      error,
+    } = await supabase.auth.admin.listUsers();
+
+    if (error) {
+      console.error("Error fetching users:", error);
+      return [];
+    }
+
+    // Fetch subscription status for all users
+    const { data: subscriptions } = await supabase
+      .from("user_subscriptions")
+      .select("*");
+
+    return users.map((user) => {
+      const sub = subscriptions?.find((s) => s.user_id === user.id);
+      return {
+        id: user.id,
+        email: user.email,
+        created_at: user.created_at,
+        last_sign_in_at: user.last_sign_in_at,
+        plan_type: sub?.plan_type || "free",
+        subscription_status: sub?.subscription_status || "inactive",
+      };
+    });
+  } catch (error) {
     console.error("Error fetching users:", error);
     return [];
   }
-
-  // Fetch subscription status for all users
-  const { data: subscriptions } = await supabase
-    .from("user_subscriptions")
-    .select("*");
-
-  return users.map((user) => {
-    const sub = subscriptions?.find((s) => s.user_id === user.id);
-    return {
-      id: user.id,
-      email: user.email,
-      created_at: user.created_at,
-      last_sign_in_at: user.last_sign_in_at,
-      plan_type: sub?.plan_type || "free",
-      subscription_status: sub?.subscription_status || "inactive",
-    };
-  });
 }
 
 export async function getSubscriptionDetails() {
+
+  "use cache"
+  cacheLife('days')
+  cacheTag('subscriptions')
+
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
@@ -134,6 +149,11 @@ export async function getSubscriptionDetails() {
 }
 
 export async function getOperators() {
+
+  "use cache"
+  cacheLife('days')
+  cacheTag('operators')
+
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
@@ -154,17 +174,7 @@ export async function getOperators() {
     return [];
   }
 
-  // Fetch auth user details for emails
-  const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
-
-  if (authError) {
-    console.error("Error fetching auth users for operators:", authError);
-    return data.map(op => ({
-      ...op,
-      email: 'Unknown',
-      role: (op.app_roles as any)?.name || 'Unknown'
-    }));
-  }
+  const users = await getUsers()
 
   return data.map(op => {
     const authUser = users.find(u => u.id === op.auth_user_id);
@@ -304,5 +314,4 @@ export async function getOperatorById(id: string) {
     return [];
   }
 }
-
 

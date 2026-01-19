@@ -264,7 +264,9 @@ export default async function SettingsPage() {
               Once you sign out, you'll need to log in again to access your
               account.
             </p>
-            <form action={signOut}>
+            <form action={async () => {
+              await signOut();
+            }}>
               <button
                 type="submit"
                 className="bg-red-600 hover:bg-red-700 shadow-lg hover:shadow-xl px-6 py-3 rounded-full font-semibold text-white text-sm transition-all"
