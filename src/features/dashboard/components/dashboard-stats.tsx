@@ -3,13 +3,18 @@ import { Crown, Sparkles, TrendingUp, ImageIcon } from "lucide-react";
 import { StatsCard } from "./stats-card";
 import { getUser } from "@/lib/auth";
 import { isProUser } from "@/lib/subscription";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 
 export async function DashboardStats() {
+  const supabase = createAdminClient()
   const user = await getUser()
   const isPro = await isProUser(user?.id || "")
+
+
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="gap-6 grid grid-cols-1 md:grid-cols-3">
       {/* Plan Card */}
       <StatsCard
         title="Active Plan"
@@ -21,9 +26,9 @@ export async function DashboardStats() {
             ? "bg-linear-to-br from-yellow-400 via-orange-400 to-yellow-500 shadow-lg shadow-orange-500/20"
             : "bg-primary/10"
         }
-        className="relative overflow-hidden group"
+        className="group relative overflow-hidden"
       >
-        <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors duration-500" />
+        <div className="-top-4 -right-4 absolute bg-primary/5 group-hover:bg-primary/10 blur-2xl rounded-full w-24 h-24 transition-colors duration-500" />
       </StatsCard>
 
       {/* Daily Usage Card */}

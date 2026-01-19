@@ -30,7 +30,7 @@ export async function login(data: LoginInput) {
     .single()
 
   revalidatePath('/', 'layout')
-  
+
   if (operator?.is_active) {
     redirect('/admin')
   }
@@ -39,17 +39,12 @@ export async function login(data: LoginInput) {
 }
 
 export async function adminLogin(data: LoginInput) {
-  console.log("Starting...")
   const result = loginSchema.safeParse(data)
   if (!result.success) {
     return { error: 'Invalid input' }
   }
 
-  console.log("Validating...")
-
   const supabase = await createClientServer()
-
-  console.log("Creating client...")
 
   const { data: { user }, error: authError } = await supabase.auth.signInWithPassword({
     email: result.data.email,
@@ -101,9 +96,9 @@ export async function signup(data: RegisterInput) {
   redirect('/dashboard')
 }
 
-export async function signOut() {
+export async function signOut(redirectTo: string = '/login') {
   const supabase = await createClientServer()
   await supabase.auth.signOut()
   revalidatePath('/', 'layout')
-  redirect('/login')
+  redirect(redirectTo)
 }

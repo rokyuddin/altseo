@@ -36,6 +36,10 @@ export async function proxy(request: NextRequest) {
   const protectedRoutes = ['/dashboard', '/assets', '/settings', '/api-keys']
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
 
+  // Admin routes that require authentication
+  const adminRoutes = ['/admin', '/admin/audit-logs', '/admin/operators', '/admin/reports', '/admin/settings', '/admin/users', '/admin/subscriptions']
+  const isAdminRoute = adminRoutes.some(route => pathname.includes(route))
+
   // Auth routes that should redirect to dashboard if already logged in
   const authRoutes = ['/login', '/register']
   const isAuthRoute = authRoutes.some(route => pathname.startsWith(route))
@@ -45,6 +49,15 @@ export async function proxy(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
+  }
+
+  if (isAdminRoute && !user) {
+    // Redirect to login if accessing admin route without auth
+    if (pathname !== '/admin/login') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/admin/login'
+      return NextResponse.redirect(url)
+    }
   }
 
   if (isAuthRoute && user) {

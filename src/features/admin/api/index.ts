@@ -1,6 +1,10 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { cacheLife, cacheTag } from "next/cache";
 
 export async function getAdminMetrics() {
+  "use cache";
+  cacheLife('days')
+  cacheTag('admin-metrics')
   const supabase = createAdminClient();
 
   const [
@@ -33,34 +37,53 @@ export async function getAdminMetrics() {
 }
 
 export async function getUsageStats() {
-  const supabase = createAdminClient();
+  "use cache";
+  cacheLife('days')
+  cacheTag('usage-stats')
+  try {
+    const supabase = createAdminClient();
 
-  // Fetch last 30 days of image generation
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    // Fetch last 30 days of image generation
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const { data, error } = await supabase
-    .from("images")
-    .select("created_at")
-    .gte("created_at", thirtyDaysAgo.toISOString())
-    .order("created_at", { ascending: true });
+    const { data, error } = await supabase
+      .from("images")
+      .select("created_at")
+      .gte("created_at", thirtyDaysAgo.toISOString())
+      .order("created_at", { ascending: true });
 
-  if (error) {
-    console.error("Error fetching usage stats:", error);
+    if (error) {
+      console.error("Error fetching usage stats:", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+      return [];
+    }
+
+    // Process data for chart
+    const statsMap = new Map();
+    data.forEach((item) => {
+      const date = new Date(item.created_at).toLocaleDateString();
+      statsMap.set(date, (statsMap.get(date) || 0) + 1);
+    });
+
+    return Array.from(statsMap.entries()).map(([date, count]) => ({
+      date,
+      count,
+    }));
+  } catch (error: any) {
+    // Handle AbortError and other errors gracefully
+    console.error("Error fetching usage stats:", {
+      message: error?.message || 'Unknown error',
+      details: error?.details || error?.stack || '',
+      hint: error?.hint || '',
+      code: error?.code || ''
+    });
     return [];
   }
-
-  // Process data for chart
-  const statsMap = new Map();
-  data.forEach((item) => {
-    const date = new Date(item.created_at).toLocaleDateString();
-    statsMap.set(date, (statsMap.get(date) || 0) + 1);
-  });
-
-  return Array.from(statsMap.entries()).map(([date, count]) => ({
-    date,
-    count,
-  }));
 }
 
 export async function getUsers() {
@@ -109,6 +132,7 @@ export async function getSubscriptionDetails() {
 
   return data;
 }
+
 export async function getOperators() {
   const supabase = createAdminClient();
 
@@ -132,7 +156,7 @@ export async function getOperators() {
 
   // Fetch auth user details for emails
   const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
-  
+
   if (authError) {
     console.error("Error fetching auth users for operators:", authError);
     return data.map(op => ({
@@ -161,3 +185,100 @@ export async function getRoles() {
   }
   return data;
 }
+
+export async function getAuditLogs() {
+  try {
+    "use cache";
+    cacheLife('weeks')
+    cacheTag('audit-logs')
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from('admin_audit_logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (error) {
+      console.error("Error fetching audit logs:", error);
+      return [];
+    }
+    return data;
+  } catch (error) {
+    console.error("Error fetching audit logs:", error);
+    return [];
+  }
+}
+
+export async function getPermissions() {
+  try {
+    "use cache";
+    cacheLife('weeks')
+    cacheTag('permissions')
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from('app_permissions').select('*');
+    if (error) {
+      console.error("Error fetching permissions:", error);
+      return [];
+    }
+    return data;
+  } catch (error) {
+    console.error("Error fetching permissions:", error);
+    return [];
+  }
+}
+
+export async function getRolePermissions() {
+  try {
+    "use cache";
+    cacheLife('days')
+    cacheTag('role-permissions')
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from('role_permissions').select('*');
+    if (error) {
+      console.error("Error fetching role permissions:", error);
+      return [];
+    }
+    return data;
+  } catch (error) {
+    console.error("Error fetching role permissions:", error);
+    return [];
+  }
+}
+
+export async function getOperatorPermissions() {
+  "use cache";
+  cacheLife('days')
+  cacheTag('operator-permissions')
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from('operator_with_permissions').select('*');
+    if (error) {
+      console.error("Error fetching operator permissions:", error);
+      return [];
+    }
+    return data;
+  } catch (error) {
+    console.error("Error fetching operator permissions:", error);
+    return [];
+  }
+}
+
+export async function getOperatorById(id: string) {
+  "use cache";
+  cacheLife('days')
+  cacheTag('operator-permissions')
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from('operator_with_permissions').select('*').eq('auth_user_id', id).single();
+    if (error) {
+      console.error("Error fetching operator permissions:", error);
+      return [];
+    }
+    return data;
+  } catch (error) {
+    console.error("Error fetching operator permissions:", error);
+    return [];
+  }
+}
+
+

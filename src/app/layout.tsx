@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google"; // Editorial combination
 import "@/styles/globals.css";
-import { AuthProvider } from "@/components/providers/auth-provider";
+import { AuthStoreInitializer } from "@/components/providers/auth-store-initializer";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -43,9 +43,8 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${inter.variable} ${playfair.variable} font-sans antialiased`}
       >
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <AuthStoreInitializer />
+        {children}
       </body>
     </html>
   );

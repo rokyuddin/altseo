@@ -8,19 +8,29 @@ import {
   CreditCard,
   Settings,
   ShieldCheck,
-  ChevronLeft,
-  ChevronRight,
   FileText,
+  User2,
+  ChevronUp,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/atoms/button";
-import { useState } from "react";
 import { RequirePermission } from "@/features/auth/components/require-permission";
 import { Logo } from "@/components/organisms/logo";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from "@/components/atoms/sidebar";
+import AdminSidebarFooter from "./admin-sidebar-footer";
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
 
   const menuItems = [
     {
@@ -73,117 +83,80 @@ export function AdminSidebar() {
   ];
 
   return (
-    <aside
-      className={cn(
-        "fixed left-0 top-0 z-40 h-screen border-r border-border/50 bg-card/30 backdrop-blur-xl transition-all duration-300",
-        collapsed ? "w-20" : "w-64"
-      )}
-    >
-      <div className="flex h-full flex-col px-4 py-8">
-        <div className={cn("mb-10 px-2", collapsed && "flex justify-center flex-col items-center")}>
-          <Logo hideText={collapsed} />
-          <div className={cn(
-            "mt-2 px-1 text-[10px] font-bold uppercase tracking-wider text-primary/60",
-            collapsed ? "text-center text-[8px]" : "flex items-center gap-2"
-          )}>
-            Admin
+    <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <div className="flex group-data-[collapsible=icon]:justify-center items-center px-2 h-12">
+          <div className="group-data-[collapsible=icon]:hidden">
+            <Logo href="/admin" />
+          </div>
+          <div className="hidden group-data-[collapsible=icon]:block">
+            <Logo hideText href="/admin" />
           </div>
         </div>
+      </SidebarHeader>
 
-        <nav className="flex-1 space-y-1.5">
-          {menuItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "group flex items-center rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
-                item.active
-                  ? "bg-primary/10 text-primary shadow-sm"
-                  : "text-muted-foreground hover:bg-primary/5 hover:text-primary",
-                collapsed && "justify-center"
-              )}
-            >
-              <div
-                className={cn(
-                  "rounded-lg p-1.5 transition-colors",
-                  item.active
-                    ? "bg-primary/10"
-                    : "bg-transparent group-hover:bg-primary/10",
-                )}
-              >
-                <item.icon className="h-4 w-4" />
-              </div>
-              {!collapsed && <span className="ml-3">{item.title}</span>}
-            </Link>
-          ))}
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Menu</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={item.active}
+                    tooltip={item.title}
+                  >
+                    <Link href={item.href}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-          <div className="pt-4 pb-2">
-            {!collapsed && <p className="px-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">Admin Tools</p>}
-            <div className="mt-2 space-y-1.5">
+        <SidebarGroup>
+          <SidebarGroupLabel>Admin Tools</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
               {adminItems.map((item) => {
                 const content = (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "group flex items-center rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
-                      item.active
-                        ? "bg-primary/10 text-primary shadow-sm"
-                        : "text-muted-foreground hover:bg-primary/5 hover:text-primary",
-                      collapsed && "justify-center"
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        "rounded-lg p-1.5 transition-colors",
-                        item.active
-                          ? "bg-primary/10"
-                          : "bg-transparent group-hover:bg-primary/10",
-                      )}
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={item.active}
+                      tooltip={item.title}
                     >
-                      <item.icon className="h-4 w-4" />
-                    </div>
-                    {!collapsed && <span className="ml-3">{item.title}</span>}
-                  </Link>
+                      <Link href={item.href}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 );
 
-                return item.permission ? (
-                  <RequirePermission key={item.href} permission={item.permission}>
-                    {content}
-                  </RequirePermission>
-                ) : content;
+                if (item.permission) {
+                  return (
+                    <RequirePermission key={item.href} permission={item.permission}>
+                      {content}
+                    </RequirePermission>
+                  );
+                }
+
+                return content;
               })}
-            </div>
-          </div>
-        </nav>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
 
-        <div className="mt-auto space-y-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full justify-start gap-3 rounded-xl"
-            onClick={() => setCollapsed(!collapsed)}
-          >
-            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-            {!collapsed && <span>Collapse Sidebar</span>}
-          </Button>
-
-          <div className="border-t border-border/50 pt-4">
-            <Link
-              href="/dashboard"
-              className={cn(
-                "flex items-center rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:bg-accent/50 hover:text-foreground",
-                collapsed && "justify-center"
-              )}
-            >
-              <div className="rounded-lg bg-accent/50 p-1.5">
-                <ChevronLeft className="h-4 w-4" />
-              </div>
-              {!collapsed && <span className="ml-3">Back to App</span>}
-            </Link>
-          </div>
-        </div>
-      </div>
-    </aside>
+      <SidebarFooter>
+        <AdminSidebarFooter />
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
   );
 }

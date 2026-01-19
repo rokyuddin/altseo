@@ -22,20 +22,20 @@ export default async function OperatorsPage() {
   ]);
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center justify-between">
+    <div className="slide-in-from-bottom-4 flex flex-col flex-1 space-y-8 overflow-y-auto animate-in duration-700 fade-in">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="font-bold text-3xl tracking-tight">
             Operators Management
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="mt-1 text-muted-foreground">
             Manage administrative access and roles for the platform.
           </p>
         </div>
         <InviteOperatorModal roles={roles} />
       </div>
 
-      <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+      <Card className="flex flex-col flex-1 bg-card/50 backdrop-blur-sm border-border/50 overflow-y-auto">
         <CardHeader>
           <CardTitle>System Operators</CardTitle>
           <CardDescription>

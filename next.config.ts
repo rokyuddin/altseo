@@ -17,7 +17,10 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "5mb",
     }
-  }
+  },
+  allowedDevOrigins: [
+    "https://foresightedly-raisiny-ayanna.ngrok-free.dev",
+  ],
 };
 
 export default nextConfig;

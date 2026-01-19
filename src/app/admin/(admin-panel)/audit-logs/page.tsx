@@ -41,17 +41,17 @@ export default async function AuditLogsPage() {
   const logs = await getAuditLogs();
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="slide-in-from-bottom-4 flex flex-col flex-1 space-y-8 overflow-y-auto animate-in duration-700 fade-in">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="font-bold text-3xl tracking-tight">
           Audit Logs
         </h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="mt-1 text-muted-foreground">
           Traceable record of all administrative actions performed on the platform.
         </p>
       </div>
 
-      <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+      <Card className="flex flex-col flex-1 bg-card/50 backdrop-blur-sm border-border/50 overflow-y-auto">
         <CardHeader>
           <CardTitle>Platform Activity</CardTitle>
           <CardDescription>
@@ -59,42 +59,40 @@ export default async function AuditLogsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden">
-            <Table>
-              <TableHeader className="bg-muted/50">
+          <Table>
+            <TableHeader className="bg-muted/50">
+              <TableRow>
+                <TableHead>Timestamp</TableHead>
+                <TableHead>Action</TableHead>
+                <TableHead>Details</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {logs.length === 0 ? (
                 <TableRow>
-                  <TableHead>Timestamp</TableHead>
-                  <TableHead>Action</TableHead>
-                  <TableHead>Details</TableHead>
+                  <TableCell colSpan={3} className="h-24 text-center">
+                    No logs found.
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {logs.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={3} className="h-24 text-center">
-                      No logs found.
+              ) : (
+                logs.map((log) => (
+                  <TableRow key={log.id} className="hover:bg-muted/30 transition-colors">
+                    <TableCell className="font-mono text-sm whitespace-nowrap">
+                      {format(new Date(log.created_at), "yyyy-MM-dd HH:mm:ss")}
+                    </TableCell>
+                    <TableCell className="font-medium text-sm capitalize">
+                      {log.action.replace('_', ' ')}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground text-sm">
+                      <pre className="max-w-md overflow-hidden text-[10px] whitespace-pre-wrap">
+                        {JSON.stringify(log.details, null, 2)}
+                      </pre>
                     </TableCell>
                   </TableRow>
-                ) : (
-                  logs.map((log) => (
-                    <TableRow key={log.id} className="hover:bg-muted/30 transition-colors">
-                      <TableCell className="text-sm font-mono whitespace-nowrap">
-                        {format(new Date(log.created_at), "yyyy-MM-dd HH:mm:ss")}
-                      </TableCell>
-                      <TableCell className="text-sm font-medium capitalize">
-                        {log.action.replace('_', ' ')}
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        <pre className="text-[10px] whitespace-pre-wrap max-w-md overflow-hidden">
-                          {JSON.stringify(log.details, null, 2)}
-                        </pre>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>

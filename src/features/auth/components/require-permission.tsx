@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { useAuth } from '@/components/providers/auth-provider';
 import { type PermissionKey, hasPermission } from '@/lib/permissions-types';
+// import { useAuth } from '@/components/providers/auth-provider';
+import { useAuthStore } from '@/hooks/use-auth';
 
 interface RequirePermissionProps {
   permission: PermissionKey;
@@ -13,15 +14,16 @@ interface RequirePermissionProps {
 /**
  * A wrapper component that only renders its children if the user has the required permission.
  */
-export function RequirePermission({ 
-  permission, 
-  children, 
-  fallback = null 
+export function RequirePermission({
+  permission,
+  children,
+  fallback = null,
 }: RequirePermissionProps) {
-  const { permissions, isLoading, isOperator } = useAuth();
+
+  const { isLoading, permissions, isOperator } = useAuthStore()
 
   if (isLoading) {
-    return null; // Or a loading skeleton
+    return <>{fallback}</>;
   }
 
   if (!isOperator || !hasPermission(permissions, permission)) {

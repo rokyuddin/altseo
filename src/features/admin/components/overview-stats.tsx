@@ -1,39 +1,18 @@
-"use client";
-
 import { Users, Image as ImageIcon, CreditCard, Activity } from "lucide-react";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/atoms/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/atoms/chart";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from "recharts";
 import { format } from "date-fns";
+import { getAdminMetrics } from "../api";
+import { use } from "react";
+import { Skeleton } from "@/components/atoms/skeleton";
 
-interface StatsGridProps {
-  metrics: {
-    totalUsers: number;
-    totalImages: number;
-    activeSubscriptions: number;
-    lastActivity: string | null;
-  };
-}
 
-export function StatsGrid({ metrics }: StatsGridProps) {
+export function StatsGrid() {
+  const metrics = use(getAdminMetrics());
   const stats = [
     {
       title: "Total Users",
@@ -72,21 +51,21 @@ export function StatsGrid({ metrics }: StatsGridProps) {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (
         <Card
           key={stat.title}
-          className="border-border/50 bg-card/50 backdrop-blur-sm transition-all hover:shadow-md"
+          className="bg-card/50 hover:shadow-md backdrop-blur-sm border-border/50 transition-all"
         >
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+          <CardHeader className="flex flex-row justify-between items-center space-y-0 pb-2">
+            <CardTitle className="font-medium text-sm">{stat.title}</CardTitle>
             <div className={`${stat.bg} ${stat.color} p-2 rounded-lg`}>
-              <stat.icon className="h-4 w-4" />
+              <stat.icon className="w-4 h-4" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stat.value}</div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <div className="font-bold text-2xl">{stat.value}</div>
+            <p className="mt-1 text-muted-foreground text-xs">
               {stat.description}
             </p>
           </CardContent>
@@ -96,58 +75,12 @@ export function StatsGrid({ metrics }: StatsGridProps) {
   );
 }
 
-interface OverviewChartProps {
-  data: { date: string; count: number }[];
-}
-
-export function OverviewChart({ data }: OverviewChartProps) {
-  const chartConfig = {
-    count: {
-      label: "Images",
-      color: "hsl(var(--primary))",
-    },
-  };
-
+export function StatsGridSkeleton() {
   return (
-    <Card className="col-span-4 border-border/50 bg-card/50 backdrop-blur-sm">
-      <CardHeader>
-        <CardTitle>Usage Analytics</CardTitle>
-        <CardDescription>
-          Number of images processed daily over the last 30 days
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[300px] w-full">
-          <ChartContainer config={chartConfig}>
-            <BarChart data={data}>
-              <CartesianGrid
-                vertical={false}
-                strokeDasharray="3 3"
-                className="stroke-muted/30"
-              />
-              <XAxis
-                dataKey="date"
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                tickFormatter={(value) => format(new Date(value), "MMM d")}
-                className="text-[10px] font-medium text-muted-foreground"
-              />
-              <YAxis hide />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Bar
-                dataKey="count"
-                fill="var(--color-count)"
-                radius={[4, 4, 0, 0]}
-                barSize={24}
-              />
-            </BarChart>
-          </ChartContainer>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-4">
+      {[1, 2, 3, 4].map((i) => (
+        <Skeleton key={i} className="rounded-xl w-full h-32" />
+      ))}
+    </div>
   );
 }

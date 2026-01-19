@@ -7,7 +7,7 @@ import { revalidatePath, revalidateTag } from 'next/cache';
  */
 const updateSubscription = async (userId: string, data: any) => {
     const supabase = createAdminClient();
-    
+
     const { error } = await supabase
         .from('user_subscriptions')
         .update({
@@ -24,13 +24,12 @@ const updateSubscription = async (userId: string, data: any) => {
     // Revalidate paths and tags to ensure UI is up to date
     revalidatePath('/', 'layout');
     revalidatePath('/dashboard', 'layout');
-    // Revalidate tags to ensure UI is up to date
     revalidateTag('user-plan', 'max');
 };
 
 export const POST = Webhook({
     webhookSecret: process.env.CREEM_WEBHOOK_SECRET!,
-    
+
     // Primary handler for granting access (active, trialing, paid)
     onGrantAccess: async ({ customer, metadata, status }) => {
         const userId = metadata?.userId as string;

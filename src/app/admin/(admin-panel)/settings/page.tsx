@@ -13,16 +13,16 @@ import { Save, AlertTriangle } from "lucide-react";
 
 export default function AdminSettingsPage() {
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="slide-in-from-bottom-4 flex flex-col space-y-8 mx-auto max-w-7xl animate-in duration-700 fade-in">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Admin Settings</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="font-bold text-3xl tracking-tight">Admin Settings</h1>
+        <p className="mt-1 text-muted-foreground">
           Configure global system parameters and administrative controls.
         </p>
       </div>
 
-      <div className="grid gap-8 max-w-4xl">
-        <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+      <div className="flex-1 gap-8 grid">
+        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
           <CardHeader>
             <CardTitle>Platform Configuration</CardTitle>
             <CardDescription>
@@ -30,7 +30,7 @@ export default function AdminSettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid gap-3">
+            <div className="gap-3 grid">
               <Label htmlFor="site-name">Platform Name</Label>
               <Input
                 id="site-name"
@@ -38,7 +38,7 @@ export default function AdminSettingsPage() {
                 className="bg-background/50 border-border/50"
               />
             </div>
-            <div className="grid gap-3">
+            <div className="gap-3 grid">
               <Label htmlFor="support-email">Admin Contact Email</Label>
               <Input
                 id="support-email"
@@ -49,16 +49,16 @@ export default function AdminSettingsPage() {
             <Separator className="bg-border/30" />
             <div className="flex justify-end">
               <Button className="gap-2">
-                <Save className="h-4 w-4" /> Save Changes
+                <Save className="w-4 h-4" /> Save Changes
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-destructive/20 bg-destructive/5 backdrop-blur-sm">
+        <Card className="bg-destructive/5 backdrop-blur-sm border-destructive/20">
           <CardHeader>
             <div className="flex items-center gap-2 text-destructive">
-              <AlertTriangle className="h-5 w-5" />
+              <AlertTriangle className="w-5 h-5" />
               <CardTitle>Danger Zone</CardTitle>
             </div>
             <CardDescription>
@@ -66,31 +66,31 @@ export default function AdminSettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between py-2">
+            <div className="flex justify-between items-center py-2">
               <div className="space-y-0.5">
-                <div className="text-sm font-medium">Maintenance Mode</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="font-medium text-sm">Maintenance Mode</div>
+                <div className="text-muted-foreground text-xs">
                   Disable user access to the platform temporarily.
                 </div>
               </div>
               <Button
                 variant="outline"
-                className="border-destructive/50 hover:bg-destructive/10 text-destructive"
+                className="hover:bg-destructive/10 border-destructive/50 text-destructive"
               >
                 Enable
               </Button>
             </div>
             <Separator className="bg-destructive/10" />
-            <div className="flex items-center justify-between py-2">
+            <div className="flex justify-between items-center py-2">
               <div className="space-y-0.5">
-                <div className="text-sm font-medium">Flush System Cache</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="font-medium text-sm">Flush System Cache</div>
+                <div className="text-muted-foreground text-xs">
                   Clear all global and local application caches.
                 </div>
               </div>
               <Button
                 variant="outline"
-                className="border-destructive/50 hover:bg-destructive/10 text-destructive"
+                className="hover:bg-destructive/10 border-destructive/50 text-destructive"
               >
                 Flush
               </Button>

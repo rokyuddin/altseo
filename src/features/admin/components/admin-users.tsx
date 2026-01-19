@@ -12,22 +12,22 @@ export async function AdminUsers() {
   const users = await getUsers();
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="slide-in-from-bottom-4 flex flex-col flex-1 space-y-8 overflow-y-auto animate-in duration-700 fade-in">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="font-bold text-3xl tracking-tight">User Management</h1>
+        <p className="mt-1 text-muted-foreground">
           Manage system users and monitor their subscription status.
         </p>
       </div>
 
-      <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+      <Card className="flex flex-col flex-1 bg-card/50 backdrop-blur-sm border-border/50 overflow-y-auto">
         <CardHeader>
           <CardTitle>All Users</CardTitle>
           <CardDescription>
             A total of {users.length} users are registered on the platform.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-1 overflow-y-auto">
           <UsersTable users={users} />
         </CardContent>
       </Card>

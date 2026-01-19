@@ -27,8 +27,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const supabase = createClient();
 
-  const fetchOperatorInfo = async () => {
-    const meta = await getOperatorMetadataClient();
+  const fetchOperatorInfo = async (userId: string) => {
+    const meta = await getOperatorMetadataClient(userId);
+    console.log(meta)
     if (meta) {
       setRole(meta.role);
       setPermissions(meta.permissions);
@@ -43,11 +44,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
-        await fetchOperatorInfo();
+        await fetchOperatorInfo(session.user.id);
       }
-      
+
       setIsLoading(false);
     };
 
@@ -57,14 +58,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
+
         if (session?.user) {
-          await fetchOperatorInfo();
+          await fetchOperatorInfo(session.user.id);
         } else {
           setRole(null);
           setPermissions([]);
         }
-        
+
         setIsLoading(false);
       }
     );

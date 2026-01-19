@@ -1,4 +1,4 @@
-export type PermissionKey = 
+export type PermissionKey =
   | 'manage_operators'
   | 'manage_users'
   | 'view_audit_logs'
